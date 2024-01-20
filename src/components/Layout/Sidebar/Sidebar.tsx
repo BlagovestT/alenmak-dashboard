@@ -11,7 +11,7 @@ const styles = {
   },
 };
 
-export default function Sidebar() {
+const Sidebar = () => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [isClosing, setIsClosing] = useState<boolean>(false);
 
@@ -31,4 +31,6 @@ export default function Sidebar() {
       </Box>
     </Stack>
   );
-}
+};
+
+export default Sidebar;

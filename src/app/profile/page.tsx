@@ -1,7 +1,7 @@
 import { Container } from "@mui/material";
 
 const ProfilePage = () => {
-  return <Container>page</Container>;
+  return <Container>Profile Page</Container>;
 };
 
 export default ProfilePage;
