@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-// import type { Metadata } from "next";
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import Sidebar from "@/components/Layout/Sidebar/Sidebar";
 import "./globals.css";
@@ -21,8 +20,9 @@ export default function RootLayout({
             sx={{
               width: { sm: `calc(100% - ${drawerWidth}px)` },
               flexGrow: 1,
-              pt: 15,
-              pl: { sm: "50px", md: `calc(${drawerWidth}px + 50px)` },
+              pt: 13,
+              pb: 3,
+              pl: { sm: "50px", md: `calc(${drawerWidth}px + 30px)` },
             }}
           >
             {children}

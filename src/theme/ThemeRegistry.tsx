@@ -158,6 +158,22 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+          border: "1px solid",
+          borderColor: "divider",
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#FFFFFF !important",
+        },
+      },
+    },
   },
 };
 
