@@ -19,14 +19,9 @@ export const SIDEBAR_MENU: SidebarMenuProps[] = [
     to: "/",
   },
   {
-    title: "График",
-    icon: CalendarMonthOutlinedIcon,
-    to: "/schedule",
-  },
-  {
     title: "Персонал",
     icon: PeopleOutlineOutlinedIcon,
-    to: "/patients",
+    to: "/staff",
   },
   {
     title: "Пациенти",
@@ -34,8 +29,13 @@ export const SIDEBAR_MENU: SidebarMenuProps[] = [
     to: "/patients",
   },
   {
+    title: "График",
+    icon: CalendarMonthOutlinedIcon,
+    to: "/schedule",
+  },
+  {
     title: "Финансов Отчет",
     icon: PaymentOutlinedIcon,
-    to: "/patients",
+    to: "/finance",
   },
 ];

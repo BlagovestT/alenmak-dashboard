@@ -28,6 +28,7 @@ const style = {
 
 interface ModalProps {
   icon?: React.ReactElement<any | any>;
+  button?: boolean;
   modalTitle: string;
   children: ReactElement<{ handleClose: () => void }>;
   open: boolean;
@@ -36,6 +37,7 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({
   icon,
+  button,
   modalTitle,
   children,
   open,
@@ -48,9 +50,8 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div>
-      {icon ? (
-        <IconButton onClick={handleOpen}>{icon}</IconButton>
-      ) : (
+      {icon && <IconButton onClick={handleOpen}>{icon}</IconButton>}
+      {button && (
         <Button
           icon={<AddTwoToneIcon fontSize="small" />}
           message={modalTitle}

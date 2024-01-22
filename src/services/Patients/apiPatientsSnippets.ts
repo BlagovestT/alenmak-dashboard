@@ -11,36 +11,36 @@ export type Patient = {
 };
 
 export type GetQueryPatientsSnippet = {
-  sucess: boolean;
+  success: boolean;
   data: Patient[];
 };
 
 export type GetQueryPatientSnippet = {
-  sucess: boolean;
+  success: boolean;
   data: Patient;
 };
 
 export type PostQueryCreatePatientSnippet = {
-  sucess: boolean;
+  success: boolean;
   data: Patient;
 };
 
 export type PostQueryUpdatePatientSnippet = {
-  sucess: boolean;
+  success: boolean;
   data: Patient;
 };
 
 export type PostQueryPatientPaidSnippet = {
-  sucess: boolean;
+  success: boolean;
   data: Patient;
 };
 
 export type PostQueryPatientUnpaidSnippet = {
-  sucess: boolean;
+  success: boolean;
   data: Patient;
 };
 
 export type PostQueryDeletePatientSnippet = {
-  sucess: boolean;
+  success: boolean;
   message: string;
 };
