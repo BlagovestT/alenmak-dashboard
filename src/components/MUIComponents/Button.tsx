@@ -12,6 +12,7 @@ interface ButtonProps {
     | "error"
     | "info"
     | "warning";
+  type?: "button" | "submit" | "reset" | undefined;
   sx?: SxProps<Theme>;
   onClick?: () => void;
 }
@@ -21,11 +22,18 @@ const Button: React.FC<ButtonProps> = ({
   message,
   variant = "contained",
   color = "primary",
+  type,
   sx,
   onClick,
 }) => {
   return (
-    <MUIButton variant={variant} color={color} onClick={onClick} sx={sx}>
+    <MUIButton
+      variant={variant}
+      color={color}
+      onClick={onClick}
+      type={type as "button" | "reset" | "submit" | undefined}
+      sx={sx}
+    >
       {icon && <>{icon} </>}
       {message}
     </MUIButton>

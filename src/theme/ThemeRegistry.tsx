@@ -8,7 +8,6 @@ import {
   ThemeProvider,
 } from "@mui/material/styles";
 import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
-import { drawerWidth } from "@/app/layout";
 
 declare module "@mui/material/styles" {
   interface PaletteOptions {
@@ -149,7 +148,7 @@ const themeOptions: ThemeOptions = {
     MuiContainer: {
       styleOverrides: {
         root: {
-          width: `calc(100vw - ${drawerWidth}px - 120px)`,
+          width: `calc(100vw - 240px - 120px)`,
           maxWidth: "100vw !important",
           backgroundColor: "#4A525A",
           margin: 0,
@@ -171,6 +170,13 @@ const themeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           color: "#FFFFFF !important",
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#4A525A",
         },
       },
     },

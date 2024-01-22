@@ -3,18 +3,24 @@ import React from "react";
 
 interface TextFieldProps {
   label: string;
+  name?: string;
+  value?: string;
   variant?: "standard" | "filled" | "outlined";
-  helperText?: string;
+  helperText?: string | boolean | undefined;
   placeholder?: string;
   disabled?: boolean;
   error?: boolean;
   multiline?: boolean;
   maxRows?: number;
   icon?: React.ReactElement<any>;
+  type?: string;
+  onChange?: any;
 }
 
 const TextField: React.FC<TextFieldProps> = ({
   label,
+  name,
+  value,
   variant = "outlined",
   helperText,
   placeholder,
@@ -23,10 +29,14 @@ const TextField: React.FC<TextFieldProps> = ({
   multiline = false,
   maxRows = 0,
   icon,
+  type,
+  onChange,
 }) => {
   return (
     <MUITextField
       label={label}
+      name={name}
+      value={value}
       helperText={helperText}
       placeholder={placeholder}
       variant={variant}
@@ -34,6 +44,8 @@ const TextField: React.FC<TextFieldProps> = ({
       error={error}
       multiline={multiline}
       maxRows={maxRows}
+      type={type}
+      onChange={onChange}
       InputProps={
         icon
           ? {

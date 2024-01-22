@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import {
   AppBar,
   IconButton,
@@ -6,6 +7,7 @@ import {
   Stack,
   Typography,
   Menu,
+  Skeleton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -15,6 +17,8 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import Link from "next/link";
+import { USERNAME, USER_ROLE } from "@/helpers/helpers";
+import { signOut } from "@/services/Auth/auth";
 
 const styles = {
   appBar: {
@@ -39,12 +43,20 @@ const Topbar: React.FC<TopbarProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [user, setUser] = useState({
+    username: "",
+    role: "",
+  });
 
   const handleDrawerToggle = () => {
     if (!isClosing) {
       setMobileOpen(!mobileOpen);
     }
   };
+
+  useEffect(() => {
+    if (USERNAME && USER_ROLE) setUser({ username: USERNAME, role: USER_ROLE });
+  }, []);
 
   return (
     <AppBar position="fixed" sx={styles.appBar}>
@@ -79,10 +91,20 @@ const Topbar: React.FC<TopbarProps> = ({
               <AccountBoxIcon sx={{ fontSize: "3rem" }} />
               <Stack alignItems="flex-start" mx={2}>
                 <Typography component="p" variant="body1" color="common.white">
-                  Username
+                  {user.username ? (
+                    user.username
+                  ) : (
+                    <Skeleton variant="text" width={100} height={20} />
+                  )}
                 </Typography>
                 <Typography component="p" variant="body1" color="common.white">
-                  Собственик
+                  {user.role === "admin" ? (
+                    "Собственик"
+                  ) : user.role === "user" ? (
+                    "Управител"
+                  ) : (
+                    <Skeleton variant="text" width={100} height={20} />
+                  )}
                 </Typography>
               </Stack>
               {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
@@ -107,7 +129,7 @@ const Topbar: React.FC<TopbarProps> = ({
                 Настройки
               </Typography>
             </MenuItem>
-            <MenuItem sx={{ gap: 2 }}>
+            <MenuItem sx={{ gap: 2 }} onClick={() => signOut()}>
               <LogoutIcon sx={{ fontSize: "1.8rem" }} />{" "}
               <Typography component="p" variant="body1">
                 Изход

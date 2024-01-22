@@ -11,7 +11,8 @@ export type AlertStatuses =
   | "info"
   | "warning"
   | "error"
-  | "loading";
+  | "loading"
+  | null;
 
 interface AlertProps {
   message: React.ReactNode;

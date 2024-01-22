@@ -47,4 +47,5 @@ export const formatDate = (date: Date) => {
 export const USER_ID = getCookie("id");
 export const USERNAME = getCookie("username");
 export const USER_EMAIL = getCookie("email");
+export const USER_ROLE = getCookie("role");
 export const USER_ACCESSTOKEN = getCookie("accessToken");
