@@ -21,7 +21,7 @@ const DrawerContent = () => {
     <Stack>
       <Logo />
       <Divider />
-      <List>
+      <List sx={{ flexGrow: 1 }}>
         {SIDEBAR_MENU.map((menuItem) => (
           <ListItem
             key={menuItem.title}
