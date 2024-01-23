@@ -9,7 +9,8 @@
 import Alert, { AlertStatuses } from '@/components/MUIComponents/Alert';
 import Button from '@/components/MUIComponents/Button';
 import TextField from '@/components/MUIComponents/TextField';
-import signUp from '@/services/Auth/auth';
+import { signUp } from '@/services/Auth/auth';
+
 import { CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -17,6 +18,8 @@ import { useState } from 'react';
 import { object, string, ref } from 'yup';
 
 const fieldValidation = object({
+  userName: string()
+    .required('Полето е задължително'),
   email: string()
     .email('Въведете валиден имейл')
     .required('Полето е задължително'),
@@ -24,10 +27,12 @@ const fieldValidation = object({
     .trim()
     .min(8, 'Дължитената трябва да е поне 8 символа')
     .required('Полето е задължително'),
-    confirmPassword: string().oneOf([ref("password")], "Паролите не са еднакви"),
+  confirmPassword: string().oneOf([ref('password')], 'Паролите не са еднакви'),
 });
 
+
 type RegisterFormValues = {
+  userName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -37,7 +42,9 @@ const RegisterPage = () => {
   const [formStatus, setFormStatus] = useState<AlertStatuses>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
   const initialValues: RegisterFormValues = {
+    userName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -49,11 +56,16 @@ const RegisterPage = () => {
       setFormStatus(null);
       setAlertMessage(null);
 
-      await signUp(values.email, values.password);
+      const newUser = await signUp(values.userName, values.email, values.password);
+      if (newUser) {
+        window.location.assign("/auth/login");
+      } else {
+        throw new Error(newUser.message)
+      }
     } catch (err) {
       console.log((err as Error).message);
       setFormStatus('error');
-      setAlertMessage('Невалидни данни, моля опитайте отново!');
+      setAlertMessage("Потребителското име или имейл адреса са заети!");
       setLoading(false);
     }
   };
@@ -84,6 +96,16 @@ const RegisterPage = () => {
             {({ handleSubmit, handleChange, touched, errors, values }) => (
               <Form onSubmit={handleSubmit}>
                 <Stack spacing={3} mt={3}>
+                <TextField
+                    name='userName'
+                    label='Потребителско Име'
+                    error={touched['userName'] && !!errors['userName']}
+                    helperText={touched['userName'] && errors['userName']}
+                    onChange={handleChange}
+                    value={values.userName}
+                    type='userName'
+                  />
+
                   <TextField
                     name='email'
                     label='Имейл Адрес'

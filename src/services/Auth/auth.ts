@@ -20,13 +20,12 @@ export const signUp = async (
   const user = resData.data;
 
   if (res.ok && user) {
-    window.location.assign("/auth/login");
 
     return user;
   } else return null;
 };
 
-export default async function signIn(email: string, password: string) {
+export const signIn = async (email: string, password: string) => {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
 

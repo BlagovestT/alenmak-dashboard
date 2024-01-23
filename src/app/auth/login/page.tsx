@@ -2,7 +2,7 @@
 import Alert, { AlertStatuses } from "@/components/MUIComponents/Alert";
 import Button from "@/components/MUIComponents/Button";
 import TextField from "@/components/MUIComponents/TextField";
-import signIn from "@/services/Auth/auth";
+import {signIn} from "@/services/Auth/auth";
 import { CircularProgress, Paper, Stack, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import Link from "next/link";
