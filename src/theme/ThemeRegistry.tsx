@@ -180,6 +180,14 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+          fontSize: "1rem",
+        },
+      },
+    },
   },
 };
 

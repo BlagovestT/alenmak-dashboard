@@ -7,7 +7,7 @@ export type PostQueryCreatePatientInput = {
 export type PostQueryUpdatePatientInput = {
   first_name: string;
   last_name: string;
-  salary: number;
+  age: number;
   paid: "paid" | "unpaid";
   status: "active" | "inactive" | "released" | "deceased";
 };

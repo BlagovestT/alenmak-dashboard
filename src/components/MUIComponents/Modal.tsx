@@ -5,26 +5,28 @@ import {
   Modal as MUIModal,
   IconButton,
   Stack,
+  useTheme,
+  Theme,
 } from "@mui/material";
 import Button from "./Button";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import CloseIcon from "@mui/icons-material/Close";
 
-const style = {
+const style = (theme: Theme) => ({
   position: "absolute",
   top: "50%",
   left: "50%",
   width: "100%",
   maxWidth: "600px",
   transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
   boxShadow: 24,
+  backgroundColor: theme.palette.primary.main,
   border: "2px solid",
   borderColor: "divider",
   borderRadius: "10px",
   gap: "2rem",
   p: "1.5rem",
-};
+});
 
 interface ModalProps {
   icon?: React.ReactElement<any | any>;
@@ -43,6 +45,7 @@ const Modal: React.FC<ModalProps> = ({
   open,
   setOpen,
 }) => {
+  const theme = useTheme();
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -60,7 +63,7 @@ const Modal: React.FC<ModalProps> = ({
       )}
 
       <MUIModal open={open} onClose={handleClose}>
-        <Box sx={style}>
+        <Box sx={style(theme)}>
           <Stack
             direction="row"
             justifyContent="space-between"

@@ -11,13 +11,29 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getQueryStaffMembers } from "@/services/Staff/apiStaffGetQueries";
 import {
   GetQueryStaffMembersSnippet,
+  PostQueryDeleteStaffMemberSnippet,
   Staff,
 } from "@/services/Staff/apiStaffSnippets";
 import Modal from "@/components/MUIComponents/Modal";
 import Dialog from "@/components/MUIComponents/Dialog";
+import PageHeader from "@/components/SmallComponents/PageHeader/PageHeader";
+import GroupIcon from "@mui/icons-material/Group";
+import Button from "@/components/MUIComponents/Button";
+import StaffForm from "@/components/PageComponents/Staff/StaffForm";
+import { postQueryDeleteStaffMember } from "@/services/Staff/apiStaffPostQueries";
+
+export type ModalType = "create" | "edit";
+export type ModalDataType = {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  salary: string;
+};
 
 const StaffPage = () => {
   const [staffData, setStaffData] = useState<Staff[]>([]);
+  const [modalData, setModalData] = useState<ModalDataType>();
+  const [modalType, setModalType] = useState<ModalType>("create");
   const [openModal, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -45,22 +61,6 @@ const StaffPage = () => {
       },
     },
     {
-      field: "paid",
-      headerName: "Статус на плащане",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <Typography
-            component="p"
-            variant="body2"
-            color={params.value === "paid" ? "green" : "error"}
-          >
-            {params.value === "paid" ? "Платен" : "Неплатен"}
-          </Typography>
-        );
-      },
-    },
-    {
       field: "createdAt",
       headerName: "Дата на вписване",
       width: 180,
@@ -82,6 +82,13 @@ const StaffPage = () => {
             <Tooltip
               title="Промени"
               onClick={() => {
+                setModalData({
+                  _id: params.row._id,
+                  first_name: params.row.first_name,
+                  last_name: params.row.last_name,
+                  salary: params.row.salary,
+                });
+                setModalType("edit");
                 setModalOpen(true);
               }}
             >
@@ -127,17 +134,62 @@ const StaffPage = () => {
   }, []);
 
   const handleDeleteStaff = async (id: string) => {
-    console.log(id);
+    setLoading(true);
+    try {
+      const deletedStaffMember =
+        await callApi<PostQueryDeleteStaffMemberSnippet>({
+          query: postQueryDeleteStaffMember(id),
+        });
+
+      if (deletedStaffMember.success) {
+        setStaffData((prev) => prev.filter((staff) => staff._id !== id));
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   return (
-    <Container>
-      <Table rows={staffData} columns={columns} loading={loading} />
+    <>
+      <PageHeader
+        header="Персонал"
+        subheader="Всичко за вашия персонал на едно място"
+        icon={<GroupIcon sx={{ fontSize: "2.5rem" }} />}
+        action={
+          <Button
+            message="+ Добави работник"
+            onClick={() => {
+              setModalData(undefined);
+              setModalType("create");
+              setModalOpen(true);
+            }}
+          />
+        }
+      />
 
-      <Modal modalTitle="Промени" open={openModal} setOpen={setModalOpen}>
-        <p>asd</p>
-      </Modal>
-    </Container>
+      <Container>
+        <Table rows={staffData} columns={columns} loading={loading} />
+
+        <Modal
+          modalTitle={
+            modalType === "create" ? "Добаив Работник" : "Промени Работник"
+          }
+          open={openModal}
+          setOpen={setModalOpen}
+        >
+          <StaffForm
+            modalData={modalData}
+            modalType={modalType}
+            loading={loading}
+            setStaffData={setStaffData}
+            setModalOpen={setModalOpen}
+            setLoading={setLoading}
+          />
+        </Modal>
+      </Container>
+    </>
   );
 };
 
