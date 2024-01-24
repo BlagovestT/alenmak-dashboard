@@ -25,11 +25,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <Stack
-      width="100%"
+      sx={{ width: { sm: `calc(100vw - ${240}px)` } }}
+      bgcolor="#F5EEE6"
       direction="row"
       justifyContent="space-between"
       alignItems="center"
-      mb={4}
+      p={4}
     >
       <Stack
         direction="row"
@@ -42,7 +43,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             justifyContent="center"
             alignItems="center"
             sx={{
-              bgcolor: theme.palette.secondary.main,
+              bgcolor: theme.palette.primary.dark,
               p: 2,
               borderRadius: "10px",
               boxShadow:

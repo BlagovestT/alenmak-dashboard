@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    unoptimized: true,
+    domains: ["ik.imagekit.io"],
+  },
+};
 
 export default nextConfig;

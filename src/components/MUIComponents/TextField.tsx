@@ -21,7 +21,7 @@ const TextField: React.FC<TextFieldProps> = ({
   label,
   name,
   value,
-  variant = "outlined",
+  variant = "filled",
   helperText,
   placeholder,
   disabled = false,

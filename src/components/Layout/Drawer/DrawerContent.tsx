@@ -26,7 +26,7 @@ const DrawerContent = () => {
           <ListItem
             key={menuItem.title}
             sx={{
-              bgcolor: pathname === menuItem.to ? theme.palette.grey[900] : "",
+              bgcolor: pathname === menuItem.to ? theme.palette.grey[100] : "",
             }}
             disablePadding
           >

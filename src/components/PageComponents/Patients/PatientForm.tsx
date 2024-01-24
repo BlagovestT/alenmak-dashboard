@@ -136,7 +136,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
           validationSchema={fieldValidation}
         >
           {({ handleSubmit, handleChange, touched, errors, values }) => (
-            <Form onSubmit={handleSubmit}>
+            <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
               <Stack spacing={3} mt={3}>
                 <TextField
                   name="firstName"
@@ -146,6 +146,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                   onChange={handleChange}
                   value={values.firstName}
                   type="text"
+                  variant="filled"
                 />
 
                 <TextField
@@ -156,16 +157,18 @@ const PatientForm: React.FC<PatientFormProps> = ({
                   onChange={handleChange}
                   value={values.lastName}
                   type="text"
+                  variant="filled"
                 />
 
                 <TextField
-                  name="Години"
-                  label="Заплата"
+                  name="age"
+                  label="Години"
                   error={touched["age"] && !!errors["age"]}
                   helperText={touched["age"] && errors["age"]}
                   onChange={handleChange}
                   value={values.age}
                   type="text"
+                  variant="filled"
                 />
 
                 <Button

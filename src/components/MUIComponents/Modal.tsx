@@ -20,7 +20,7 @@ const style = (theme: Theme) => ({
   maxWidth: "600px",
   transform: "translate(-50%, -50%)",
   boxShadow: 24,
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: theme.palette.background.default,
   border: "2px solid",
   borderColor: "divider",
   borderRadius: "10px",

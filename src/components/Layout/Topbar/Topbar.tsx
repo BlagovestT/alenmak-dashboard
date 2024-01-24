@@ -90,14 +90,14 @@ const Topbar: React.FC<TopbarProps> = ({
             >
               <AccountBoxIcon sx={{ fontSize: "3rem" }} />
               <Stack alignItems="flex-start" mx={2}>
-                <Typography component="p" variant="body1" color="common.white">
+                <Typography component="p" variant="body1" color="common.black">
                   {user.username ? (
                     user.username
                   ) : (
                     <Skeleton variant="text" width={100} height={20} />
                   )}
                 </Typography>
-                <Typography component="p" variant="body1" color="common.white">
+                <Typography component="p" variant="body1" color="common.black">
                   {user.role === "admin" ? (
                     "Собственик"
                   ) : user.role === "user" ? (

@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aldabil/react-scheduler": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.5",
     "@mui/material": "^5.15.5",
     "@mui/x-data-grid": "^6.19.1",
+    "@mui/x-date-pickers": "^6.19.0",
     "axios": "^1.6.5",
+    "date-fns": "^2.21.2",
     "formik": "^2.4.5",
     "next": "14.1.0",
     "react": "^18",

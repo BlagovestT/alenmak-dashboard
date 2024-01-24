@@ -174,7 +174,7 @@ const StaffPage = () => {
 
         <Modal
           modalTitle={
-            modalType === "create" ? "Добаив Работник" : "Промени Работник"
+            modalType === "create" ? "Добави Работник" : "Промени Работник"
           }
           open={openModal}
           setOpen={setModalOpen}

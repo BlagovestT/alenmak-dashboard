@@ -1,17 +1,28 @@
-import Box from "@mui/material/Box";
+import { Box, useTheme } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { DataGridLocale } from "@/helpers/DataGridLocale";
 import LinearProgress from "@mui/material/LinearProgress";
+import { Patient } from "@/services/Patients/apiPatientsSnippets";
+import { Staff } from "@/services/Staff/apiStaffSnippets";
 
 interface TableProps {
-  rows: any; // TODO: add types
+  rows: Patient[] | Staff[];
   columns: GridColDef[];
   loading: boolean;
 }
 
 const Table: React.FC<TableProps> = ({ rows, columns, loading }) => {
+  const theme = useTheme();
+
   return (
-    <Box sx={{ height: 600, width: "100%", bgcolor: "#101632" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: 600,
+        bgcolor: theme.palette.common.white,
+        borderRadius: "5px",
+      }}
+    >
       <DataGrid
         getRowId={(row) => row._id}
         rows={rows ? rows : []}

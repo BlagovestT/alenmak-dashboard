@@ -40,11 +40,11 @@ const RootLayout = ({
             <Box
               component="main"
               sx={{
-                width: { sm: `calc(100% - ${240}px)` },
+                width: { sm: `calc(100vw - ${240}px)` },
                 flexGrow: 1,
-                pt: 13,
+                pt: 10,
                 pb: 3,
-                pl: { sm: "50px", md: `calc(${240}px + 30px)` },
+                pl: { sm: "50px", md: `calc(${240}px)` },
               }}
             >
               {children}

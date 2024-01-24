@@ -8,6 +8,7 @@ import { signUp } from "@/services/Auth/auth";
 import { Form, Formik } from "formik";
 import Link from "next/link";
 import { object, string, ref } from "yup";
+import Image from "next/image";
 
 const fieldValidation = object({
   userName: string().required("Полето е задължително"),
@@ -72,9 +73,12 @@ const RegisterPage = () => {
     >
       <Paper sx={{ width: "100%", maxWidth: "600px", p: 4 }}>
         <Stack justifyContent="center" alignItems="center" gap={2}>
-          <Typography component="h1" variant="h1">
-            Аленмак
-          </Typography>
+          <Image
+            src="https://ik.imagekit.io/obelussoft/logo_LrobyDgIb.png?updatedAt=1706031675190"
+            width={200}
+            height={70}
+            alt="logo"
+          />
           <Typography component="h2" variant="h2">
             Регистрация
           </Typography>

@@ -117,7 +117,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
   };
 
   return (
-    <Stack justifyContent="center" alignItems="center">
+    <Stack width="100%" justifyContent="center" alignItems="center">
       {!loading ? (
         <Formik
           initialValues={initialValues}
@@ -125,7 +125,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
           validationSchema={fieldValidation}
         >
           {({ handleSubmit, handleChange, touched, errors, values }) => (
-            <Form onSubmit={handleSubmit}>
+            <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
               <Stack spacing={3} mt={3}>
                 <TextField
                   name="firstName"

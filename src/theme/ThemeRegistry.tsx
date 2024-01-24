@@ -47,17 +47,17 @@ const themeOptions: ThemeOptions = {
       black: "#000000",
     },
     text: {
-      primary: "#ffffff",
+      primary: "#000000",
     },
     background: {
-      default: "#343A40",
+      default: "#FBF9F1",
     },
     primary: {
-      main: "#1B2430",
+      main: "#597E52",
+      dark: "#f2f3f5",
     },
     secondary: {
-      main: "#272F37",
-      light: "#4A525A",
+      main: "#BF3131",
     },
     error: {
       main: "#AD2323",
@@ -108,31 +108,17 @@ const themeOptions: ThemeOptions = {
     },
   },
   components: {
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          background: "#191919",
-        },
-      },
-    },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: "#191919",
+          background: "#FFFFFF",
         },
       },
     },
     MuiSvgIcon: {
       styleOverrides: {
         root: {
-          color: "#FFFFFF",
-        },
-      },
-    },
-    MuiDivider: {
-      styleOverrides: {
-        root: {
-          background: "#FFFFFF",
+          color: "#000000",
         },
       },
     },
@@ -141,7 +127,6 @@ const themeOptions: ThemeOptions = {
         paper: {
           width: "100%",
           maxWidth: "200px",
-          background: "#343A40",
         },
       },
     },
@@ -150,7 +135,6 @@ const themeOptions: ThemeOptions = {
         root: {
           width: `calc(100vw - 240px - 120px)`,
           maxWidth: "100vw !important",
-          backgroundColor: "#4A525A",
           margin: 0,
           padding: "2rem !important",
           borderRadius: "10px",
@@ -166,25 +150,23 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
-    MuiInputLabel: {
-      styleOverrides: {
-        root: {
-          color: "#FFFFFF !important",
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#4A525A",
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: "capitalize",
           fontSize: "1rem",
+          "&:hover": {
+            backgroundColor: "#3e6338",
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiFilledInput-root": {
+            background: "#f2f2f2 !important",
+          },
         },
       },
     },
