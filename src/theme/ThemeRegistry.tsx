@@ -177,6 +177,13 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontSize: "1rem",
+        },
+      },
+    },
   },
 };
 

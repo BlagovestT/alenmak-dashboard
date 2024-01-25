@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { CallApiParams } from "./apiTypes";
 import { USER_ACCESSTOKEN } from "@/helpers/helpers";
+import { signOut } from "./Auth/auth";
 
 export const API_LINK_URL = process.env.NEXT_PUBLIC_API_LINK;
 
@@ -35,7 +36,7 @@ export const callApi = async <T>(params: CallApiParams): Promise<T> => {
       throw new Error(`API error - ${(error as Error).message}`);
     }
   } else {
+    signOut();
     throw new Error("Access Cookie is not defined");
-    // signOut();
   }
 };
