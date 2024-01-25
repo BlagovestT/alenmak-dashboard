@@ -12,6 +12,7 @@ const Logo = () => {
           width={200}
           height={70}
           alt="logo"
+          priority
         />
       </Link>
     </Stack>

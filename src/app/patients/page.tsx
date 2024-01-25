@@ -37,6 +37,8 @@ export type ModalDataType = {
   first_name: string;
   last_name: string;
   age: number;
+  gender: "male" | "female";
+  group: "група а" | "група б";
   paid: "paid" | "unpaid";
   status: "active" | "inactive" | "released" | "deceased";
 };
@@ -60,8 +62,29 @@ const PatientsPage = () => {
       width: 150,
     },
     {
+      field: "gender",
+      headerName: "Пол",
+      width: 60,
+      renderCell: (params) => {
+        return (
+          <Typography component="p" variant="body2">
+            {params.value === "male"
+              ? "Мъж"
+              : params.value === "female"
+              ? "Жена"
+              : ""}
+          </Typography>
+        );
+      },
+    },
+    {
       field: "age",
       headerName: "Години",
+      width: 70,
+    },
+    {
+      field: "group",
+      headerName: "Група",
       width: 100,
     },
     {
@@ -169,6 +192,8 @@ const PatientsPage = () => {
                   age: params.row.age,
                   paid: params.row.paid,
                   status: params.row.status,
+                  gender: params.row.gender,
+                  group: params.row.group,
                 });
                 setModalOpen(true);
                 setModalType("edit");

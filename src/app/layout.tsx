@@ -31,7 +31,7 @@ const RootLayout = ({
   return (
     <html lang="en">
       <ThemeRegistry>
-        <body>
+        <body suppressHydrationWarning={true}>
           {pathname !== "/auth/login" && pathname !== "/auth/register" && (
             <Sidebar />
           )}

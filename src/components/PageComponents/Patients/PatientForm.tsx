@@ -11,10 +11,12 @@ import {
   postQueryCreatePatient,
   postQueryUpdatePatient,
 } from "@/services/Patients/apiPatientsPostQueries";
-import { CircularProgress, Stack, TextField } from "@mui/material";
+import { CircularProgress, Stack } from "@mui/material";
 import { Form, Formik } from "formik";
 import Button from "@/components/MUIComponents/Button";
 import { object, string } from "yup";
+import Select from "@/components/MUIComponents/Select";
+import TextField from "@/components/MUIComponents/TextField";
 
 const fieldValidation = object({
   firstName: string().required("Полето е задължително"),
@@ -25,12 +27,16 @@ const fieldValidation = object({
       "Моля, въведете само числа без интервали, запетайки или точки"
     )
     .required("Полето е задължително"),
+  gender: string().required("Полето е задължително"),
+  group: string().required("Полето е задължително"),
 });
 
 type PatientFormValues = {
   firstName: string;
   lastName: string;
   age: string;
+  gender: string;
+  group: string;
   paid: string;
   status: string;
 };
@@ -57,6 +63,8 @@ const PatientForm: React.FC<PatientFormProps> = ({
   const initialValues: PatientFormValues = {
     firstName: modalData?.first_name || "",
     lastName: modalData?.last_name || "",
+    gender: modalData?.gender || "",
+    group: modalData?.group || "",
     age: modalData?.age.toString() || "",
     paid: modalData?.paid || "",
     status: modalData?.status || "",
@@ -68,17 +76,15 @@ const PatientForm: React.FC<PatientFormProps> = ({
       setFormStatus(null);
       setAlertMessage(null);
 
-      const body = {
-        first_name: values.firstName,
-        last_name: values.lastName,
-        age: +values.age,
-        paid: values.paid,
-        status: values.status,
-      };
-
       if (modalType === "create") {
         const newPatientMember = await callApi<PostQueryCreatePatientSnippet>({
-          query: postQueryCreatePatient(body),
+          query: postQueryCreatePatient({
+            first_name: values.firstName,
+            last_name: values.lastName,
+            age: +values.age,
+            gender: values.gender as "male" | "female",
+            group: values.group as "група а" | "група б",
+          }),
         });
 
         if (newPatientMember.success) {
@@ -94,13 +100,17 @@ const PatientForm: React.FC<PatientFormProps> = ({
         const updatePatientMember =
           await callApi<PostQueryUpdatePatientSnippet>({
             query: postQueryUpdatePatient(modalData?._id, {
-              ...body,
-              paid: body.paid as "paid" | "unpaid",
-              status: body.status as
+              first_name: values.firstName,
+              last_name: values.lastName,
+              age: +values.age,
+              paid: values.paid as "paid" | "unpaid",
+              status: values.status as
                 | "active"
                 | "inactive"
                 | "released"
                 | "deceased",
+              gender: values.gender as "male" | "female",
+              group: values.group as "група а" | "група б",
             }),
           });
 
@@ -136,7 +146,11 @@ const PatientForm: React.FC<PatientFormProps> = ({
           validationSchema={fieldValidation}
         >
           {({ handleSubmit, handleChange, touched, errors, values }) => (
-            <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
+            <Form
+              style={{ width: "100%" }}
+              onSubmit={handleSubmit}
+              autoComplete="false"
+            >
               <Stack spacing={3} mt={3}>
                 <TextField
                   name="firstName"
@@ -146,7 +160,6 @@ const PatientForm: React.FC<PatientFormProps> = ({
                   onChange={handleChange}
                   value={values.firstName}
                   type="text"
-                  variant="filled"
                 />
 
                 <TextField
@@ -157,7 +170,19 @@ const PatientForm: React.FC<PatientFormProps> = ({
                   onChange={handleChange}
                   value={values.lastName}
                   type="text"
-                  variant="filled"
+                />
+
+                <Select
+                  name="gender"
+                  label="Пол"
+                  selectValues={[
+                    { label: "Мъж", value: "male" },
+                    { label: "Жена", value: "female" },
+                  ]}
+                  value={values.gender}
+                  helperText={touched["gender"] && errors["gender"]}
+                  error={touched["gender"] && !!errors["gender"]}
+                  onChange={handleChange}
                 />
 
                 <TextField
@@ -168,7 +193,19 @@ const PatientForm: React.FC<PatientFormProps> = ({
                   onChange={handleChange}
                   value={values.age}
                   type="text"
-                  variant="filled"
+                />
+
+                <Select
+                  name="group"
+                  label="Група"
+                  selectValues={[
+                    { label: "Група А", value: "група а" },
+                    { label: "Група Б", value: "група б" },
+                  ]}
+                  helperText={touched["group"] && errors["group"]}
+                  value={values.group}
+                  error={touched["group"] && !!errors["group"]}
+                  onChange={handleChange}
                 />
 
                 <Button

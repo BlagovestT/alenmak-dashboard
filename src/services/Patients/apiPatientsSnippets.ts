@@ -2,6 +2,8 @@ export type Patient = {
   _id: string;
   first_name: string;
   last_name: string;
+  gender: "male" | "female";
+  group: "група а" | "група б";
   age: number;
   paid: "paid" | "unpaid";
   status: "active" | "inactive" | "released" | "deceased";

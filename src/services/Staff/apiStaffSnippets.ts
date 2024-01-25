@@ -2,8 +2,11 @@ export type Staff = {
   _id: string;
   first_name: string;
   last_name: string;
-  salary: number;
-  status: "paid" | "unpaid";
+  gender: "male" | "female";
+  age: number;
+  paid: "paid" | "unpaid";
+  status: "active" | "inactive" | "released" | "deceased";
+  group: "група а" | "група б";
   createdAt: Date;
   updatedAt: Date;
   __v: number;

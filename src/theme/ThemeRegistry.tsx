@@ -170,6 +170,13 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          background: "#f2f2f2",
+        },
+      },
+    },
   },
 };
 

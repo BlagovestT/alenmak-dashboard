@@ -16,10 +16,13 @@ import {
   postQueryUpdateStaffMember,
 } from "@/services/Staff/apiStaffPostQueries";
 import { ModalDataType, ModalType } from "@/app/staff/page";
+import Select from "@/components/MUIComponents/Select";
 
 const fieldValidation = object({
   firstName: string().required("Полето е задължително"),
   lastName: string().required("Полето е задължително"),
+  gender: string().required("Полето е задължително"),
+  occupation: string().required("Полето е задължително"),
   salary: string()
     .matches(
       /^[0-9]+$/,
@@ -31,6 +34,8 @@ const fieldValidation = object({
 type StaffFormValues = {
   firstName: string;
   lastName: string;
+  gender: string;
+  occupation: string;
   salary: string;
 };
 
@@ -56,6 +61,8 @@ const StaffForm: React.FC<StaffFormProps> = ({
   const initialValues: StaffFormValues = {
     firstName: modalData?.first_name ? modalData.first_name : "",
     lastName: modalData?.last_name ? modalData.last_name : "",
+    gender: modalData?.gender ? modalData.gender : "",
+    occupation: modalData?.occupation ? modalData.occupation : "",
     salary: modalData?.salary ? modalData.salary : "",
   };
 
@@ -69,12 +76,25 @@ const StaffForm: React.FC<StaffFormProps> = ({
         first_name: values.firstName,
         last_name: values.lastName,
         salary: +values.salary,
+        gender: values.gender,
+        occupation: values.occupation,
       };
 
       if (modalType === "create") {
         const newStaffMember = await callApi<PostQueryCreateStaffMemberSnippet>(
           {
-            query: postQueryCreateStaffMember(body),
+            query: postQueryCreateStaffMember({
+              ...body,
+              gender: values.gender as "male" | "female",
+              occupation: values.occupation as
+                | "Санитар"
+                | "Медицинска Сестра"
+                | "Управител"
+                | "Готвач"
+                | "Социален Работник"
+                | "Рехабилитатор"
+                | "Болногледач",
+            }),
           }
         );
 
@@ -90,7 +110,18 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
         const updateStaffMember =
           await callApi<PostQueryUpdateStaffMemberSnippet>({
-            query: postQueryUpdateStaffMember(modalData?._id, body),
+            query: postQueryUpdateStaffMember(modalData?._id, {
+              ...body,
+              gender: values.gender as "male" | "female",
+              occupation: values.occupation as
+                | "Санитар"
+                | "Медицинска Сестра"
+                | "Управител"
+                | "Готвач"
+                | "Социален Работник"
+                | "Рехабилитатор"
+                | "Болногледач",
+            }),
           });
 
         if (updateStaffMember.success) {
@@ -125,7 +156,11 @@ const StaffForm: React.FC<StaffFormProps> = ({
           validationSchema={fieldValidation}
         >
           {({ handleSubmit, handleChange, touched, errors, values }) => (
-            <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
+            <Form
+              style={{ width: "100%" }}
+              onSubmit={handleSubmit}
+              autoComplete="false"
+            >
               <Stack spacing={3} mt={3}>
                 <TextField
                   name="firstName"
@@ -145,6 +180,37 @@ const StaffForm: React.FC<StaffFormProps> = ({
                   onChange={handleChange}
                   value={values.lastName}
                   type="text"
+                />
+
+                <Select
+                  name="gender"
+                  label="Пол"
+                  selectValues={[
+                    { label: "Мъж", value: "male" },
+                    { label: "Жена", value: "female" },
+                  ]}
+                  value={values.gender}
+                  helperText={touched["gender"] && errors["gender"]}
+                  error={touched["gender"] && !!errors["gender"]}
+                  onChange={handleChange}
+                />
+
+                <Select
+                  name="occupation"
+                  label="Длъжност"
+                  selectValues={[
+                    { label: "Санитар", value: "Санитар" },
+                    { label: "Медицинска Сестра", value: "Медицинска Сестра" },
+                    { label: "Управител", value: "Управител" },
+                    { label: "Готвач", value: "Готвач" },
+                    { label: "Социален Работник", value: "Социален Работник" },
+                    { label: "Рехабилитатор", value: "Рехабилитатор" },
+                    { label: "Болногледач", value: "Болногледач" },
+                  ]}
+                  value={values.occupation}
+                  helperText={touched["occupation"] && errors["occupation"]}
+                  error={touched["occupation"] && !!errors["occupation"]}
+                  onChange={handleChange}
                 />
 
                 <TextField

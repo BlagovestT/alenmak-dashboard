@@ -27,6 +27,15 @@ export type ModalDataType = {
   _id: string;
   first_name: string;
   last_name: string;
+  gender: "male" | "female";
+  occupation:
+    | "Санитар"
+    | "Медицинска Сестра"
+    | "Управител"
+    | "Готвач"
+    | "Социален Работник"
+    | "Рехабилитатор"
+    | "Болногледач";
   salary: string;
 };
 
@@ -47,6 +56,30 @@ const StaffPage = () => {
       field: "last_name",
       headerName: "Фамилия",
       width: 150,
+    },
+    {
+      field: "gender",
+      headerName: "Пол",
+      width: 60,
+      renderCell: (params) => {
+        return (
+          <Typography component="p" variant="body2">
+            {params.value === "male" ? "Мъж" : "Жена"}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: "occupation",
+      headerName: "Длъжност",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <Typography component="p" variant="body2">
+            {params.value}
+          </Typography>
+        );
+      },
     },
     {
       field: "salary",
@@ -87,6 +120,8 @@ const StaffPage = () => {
                   first_name: params.row.first_name,
                   last_name: params.row.last_name,
                   salary: params.row.salary,
+                  gender: params.row.gender,
+                  occupation: params.row.occupation,
                 });
                 setModalType("edit");
                 setModalOpen(true);
