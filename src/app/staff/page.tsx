@@ -117,7 +117,14 @@ const StaffPage = () => {
             <Tooltip
               title="Документи"
               onClick={() => {
-                setModalData(undefined);
+                setModalData({
+                  _id: params.row._id,
+                  first_name: params.row.first_name,
+                  last_name: params.row.last_name,
+                  salary: params.row.salary,
+                  gender: params.row.gender,
+                  occupation: params.row.occupation,
+                });
                 setModalType("documents");
                 setModalOpen(true);
               }}
@@ -230,8 +237,11 @@ const StaffPage = () => {
           open={openModal}
           setOpen={setModalOpen}
         >
-          {modalType === "documents" ? (
-            <DocumentsContent />
+          {modalType === "documents" && modalData ? (
+            <DocumentsContent
+              firstName={modalData.first_name}
+              lastName={modalData.last_name}
+            />
           ) : (
             <StaffForm
               modalData={modalData}

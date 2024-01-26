@@ -155,7 +155,16 @@ const PatientsPage = () => {
             <Tooltip
               title="Документи"
               onClick={() => {
-                setModalData(undefined);
+                setModalData({
+                  _id: params.row._id,
+                  first_name: params.row.first_name,
+                  last_name: params.row.last_name,
+                  age: params.row.age,
+                  paid: params.row.paid,
+                  status: params.row.status,
+                  gender: params.row.gender,
+                  group: params.row.group,
+                });
                 setModalType("documents");
                 setModalOpen(true);
               }}
@@ -330,8 +339,11 @@ const PatientsPage = () => {
           open={openModal}
           setOpen={setModalOpen}
         >
-          {modalType === "documents" ? (
-            <DocumentsContent />
+          {modalType === "documents" && modalData ? (
+            <DocumentsContent
+              firstName={modalData.first_name}
+              lastName={modalData.last_name}
+            />
           ) : (
             <PatientsForm
               modalData={modalData}
