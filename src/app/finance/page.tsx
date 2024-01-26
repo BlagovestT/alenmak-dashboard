@@ -14,7 +14,11 @@ import {
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import FinanceWidget from '@/components/PageComponents/Finance/FinanceWidget';
 import BarChart from '@/components/SmallComponents/BarChart/BarChart';
+import { useState } from 'react';
+import Modal from '@/components/MUIComponents/Modal';
+import FinanceModalContent from '@/components/PageComponents/Finance/FinanceModalContent';
 
+export type ModalType = "income" | "expenses";
 export interface FinanceDateType {
     month: string;
     earnings: number;
@@ -56,6 +60,8 @@ const FINANCE_DATA: FinanceDateType[] = [
 
 const Finance = () => {
   const theme = useTheme();
+  const [openModal, setModalOpen] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<ModalType>("income");
 
   return (
     <>
@@ -64,12 +70,23 @@ const Finance = () => {
         subheader='Всичко за вашите финанси на едно място'
         icon={<CreditCardIcon sx={{ fontSize: '2.5rem' }} />}
         action={
+          <Stack gap={1}>
           <Button
-            message='+ Приход, Разход'
+            message='Добави Приход'
             onClick={() => {
-              console.log('123');
+              setModalType("income");
+              setModalOpen(true);
             }}
           />
+          <Button
+            message='Добави Разход'
+            onClick={() => {
+              setModalType("expenses");
+              setModalOpen(true);
+            }}
+            color='error'
+          />
+          </Stack>
         }
       />
       <Container>
@@ -113,6 +130,16 @@ const Finance = () => {
             <BarChart data={FINANCE_DATA}/>
           </Paper>
         </Stack>
+
+        <Modal
+          modalTitle={
+            modalType === "income" ? "Добави Приход" : "Добави Разход"
+          }
+          open={openModal}
+          setOpen={setModalOpen}
+        >
+          <FinanceModalContent modalType={modalType} />
+        </Modal>
       </Container>
     </>
   );
