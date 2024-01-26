@@ -30,7 +30,7 @@ import {
 import PatientsForm from "@/components/PageComponents/Patients/PatientForm";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import DangerousIcon from "@mui/icons-material/Dangerous";
-import PatientDocumentsContent from "@/components/PageComponents/Patients/PatientDocumentsContent";
+import DocumentsContent from "@/components/PageComponents/Patients/DocumentsContent";
 
 export type ModalType = "create" | "edit" | "documents";
 export type ModalDataType = {
@@ -331,7 +331,7 @@ const PatientsPage = () => {
           setOpen={setModalOpen}
         >
           {modalType === "documents" ? (
-            <PatientDocumentsContent />
+            <DocumentsContent />
           ) : (
             <PatientsForm
               modalData={modalData}

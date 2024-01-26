@@ -108,6 +108,15 @@ const themeOptions: ThemeOptions = {
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        a: {
+          color: "inherit",
+          textDecoration: "none",
+          cursor: "pointer",
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: {

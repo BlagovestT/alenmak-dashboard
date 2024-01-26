@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { USER_ID } from "@/helpers/helpers";
 import { signOut } from "@/services/Auth/auth";
 import { usePathname } from "next/navigation";
-import "./globals.css";
 
 const RootLayout = ({
   children,

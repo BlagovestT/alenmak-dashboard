@@ -20,7 +20,7 @@ import Button from "@/components/MUIComponents/Button";
 import FileDropzone from "@/components/SmallComponents/Dropzone/FileDropzone";
 import Alert, { AlertStatuses } from "@/components/MUIComponents/Alert";
 
-const PatientDocumentsContent = () => {
+const DocumentsContent = () => {
   const theme = useTheme();
   const [file, setFile] = useState<FileWithPath | null>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -96,4 +96,4 @@ const PatientDocumentsContent = () => {
   );
 };
 
-export default PatientDocumentsContent;
+export default DocumentsContent;

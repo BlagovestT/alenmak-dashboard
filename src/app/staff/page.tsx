@@ -21,8 +21,10 @@ import GroupIcon from "@mui/icons-material/Group";
 import Button from "@/components/MUIComponents/Button";
 import StaffForm from "@/components/PageComponents/Staff/StaffForm";
 import { postQueryDeleteStaffMember } from "@/services/Staff/apiStaffPostQueries";
+import FolderIcon from "@mui/icons-material/Folder";
+import DocumentsContent from "@/components/PageComponents/Patients/DocumentsContent";
 
-export type ModalType = "create" | "edit";
+export type ModalType = "create" | "edit" | "documents";
 export type ModalDataType = {
   _id: string;
   first_name: string;
@@ -111,6 +113,20 @@ const StaffPage = () => {
       renderCell: (params) => {
         return (
           <>
+            {/* Documents */}
+            <Tooltip
+              title="Документи"
+              onClick={() => {
+                setModalData(undefined);
+                setModalType("documents");
+                setModalOpen(true);
+              }}
+            >
+              <IconButton>
+                <FolderIcon sx={{ color: "#0096FF" }} />
+              </IconButton>
+            </Tooltip>
+
             {/* Edit */}
             <Tooltip
               title="Промени"
@@ -214,14 +230,18 @@ const StaffPage = () => {
           open={openModal}
           setOpen={setModalOpen}
         >
-          <StaffForm
-            modalData={modalData}
-            modalType={modalType}
-            loading={loading}
-            setStaffData={setStaffData}
-            setModalOpen={setModalOpen}
-            setLoading={setLoading}
-          />
+          {modalType === "documents" ? (
+            <DocumentsContent />
+          ) : (
+            <StaffForm
+              modalData={modalData}
+              modalType={modalType}
+              loading={loading}
+              setStaffData={setStaffData}
+              setModalOpen={setModalOpen}
+              setLoading={setLoading}
+            />
+          )}
         </Modal>
       </Container>
     </>

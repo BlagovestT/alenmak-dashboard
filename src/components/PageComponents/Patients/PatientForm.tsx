@@ -18,6 +18,35 @@ import { object, string } from "yup";
 import Select from "@/components/MUIComponents/Select";
 import TextField from "@/components/MUIComponents/TextField";
 
+const GENDER_SELECT_VALUES = [
+  { label: "Мъж", value: "male" },
+  { label: "Жена", value: "female" },
+];
+
+const GROUP_SELECT_VALUES = [
+  { label: "Група А", value: "група а" },
+  { label: "Група Б", value: "група б" },
+];
+
+const STATUS_SELECT_VALUES = [
+  {
+    label: "Активен",
+    value: "active",
+  },
+  {
+    label: "Неактивен",
+    value: "inactive",
+  },
+  {
+    label: "Изписан",
+    value: "released",
+  },
+  {
+    label: "Починал",
+    value: "deceased",
+  },
+];
+
 const fieldValidation = object({
   firstName: string().required("Полето е задължително"),
   lastName: string().required("Полето е задължително"),
@@ -175,10 +204,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 <Select
                   name="gender"
                   label="Пол"
-                  selectValues={[
-                    { label: "Мъж", value: "male" },
-                    { label: "Жена", value: "female" },
-                  ]}
+                  selectValues={GENDER_SELECT_VALUES}
                   value={values.gender}
                   helperText={touched["gender"] && errors["gender"]}
                   error={touched["gender"] && !!errors["gender"]}
@@ -198,15 +224,24 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 <Select
                   name="group"
                   label="Група"
-                  selectValues={[
-                    { label: "Група А", value: "група а" },
-                    { label: "Група Б", value: "група б" },
-                  ]}
+                  selectValues={GROUP_SELECT_VALUES}
                   helperText={touched["group"] && errors["group"]}
                   value={values.group}
                   error={touched["group"] && !!errors["group"]}
                   onChange={handleChange}
                 />
+
+                {modalType === "edit" && (
+                  <Select
+                    name="status"
+                    label="Група"
+                    selectValues={STATUS_SELECT_VALUES}
+                    helperText={touched["status"] && errors["status"]}
+                    value={values.status}
+                    error={touched["status"] && !!errors["status"]}
+                    onChange={handleChange}
+                  />
+                )}
 
                 <Button
                   message={modalType === "create" ? "Добави" : "Запази"}
