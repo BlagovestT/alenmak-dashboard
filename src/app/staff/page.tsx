@@ -114,43 +114,41 @@ const StaffPage = () => {
         return (
           <>
             {/* Documents */}
-            <Tooltip
-              title="Документи"
-              onClick={() => {
-                setModalData({
-                  _id: params.row._id,
-                  first_name: params.row.first_name,
-                  last_name: params.row.last_name,
-                  salary: params.row.salary,
-                  gender: params.row.gender,
-                  occupation: params.row.occupation,
-                });
-                setModalType("documents");
-                setModalOpen(true);
-              }}
-            >
-              <IconButton>
+            <Tooltip title="Документи">
+              <IconButton
+                onClick={() => {
+                  setModalData({
+                    _id: params.row._id,
+                    first_name: params.row.first_name,
+                    last_name: params.row.last_name,
+                    salary: params.row.salary,
+                    gender: params.row.gender,
+                    occupation: params.row.occupation,
+                  });
+                  setModalType("documents");
+                  setModalOpen(true);
+                }}
+              >
                 <FolderIcon sx={{ color: "#0096FF" }} />
               </IconButton>
             </Tooltip>
 
             {/* Edit */}
-            <Tooltip
-              title="Промени"
-              onClick={() => {
-                setModalData({
-                  _id: params.row._id,
-                  first_name: params.row.first_name,
-                  last_name: params.row.last_name,
-                  salary: params.row.salary,
-                  gender: params.row.gender,
-                  occupation: params.row.occupation,
-                });
-                setModalType("edit");
-                setModalOpen(true);
-              }}
-            >
-              <IconButton>
+            <Tooltip title="Промени">
+              <IconButton
+                onClick={() => {
+                  setModalData({
+                    _id: params.row._id,
+                    first_name: params.row.first_name,
+                    last_name: params.row.last_name,
+                    salary: params.row.salary,
+                    gender: params.row.gender,
+                    occupation: params.row.occupation,
+                  });
+                  setModalType("edit");
+                  setModalOpen(true);
+                }}
+              >
                 <EditIcon sx={{ color: "#FFA319" }} />
               </IconButton>
             </Tooltip>

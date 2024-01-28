@@ -15,13 +15,13 @@ export const getQueryDocumentByOwnerId = (documentId: string): Query => ({
   method: "GET",
 });
 
-export const getQueryDownloadDocument = (fileName: string): Query => ({
-  endpoint: `/document/download/${fileName}`,
+export const getQueryDownloadDocument = (documentId: string): Query => ({
+  endpoint: `/document/download/${documentId}`,
   method: "GET",
   blob: true,
 });
 
-export const getQueryPreviewDocument = (fileName: string): Query => ({
-  endpoint: `/document/preview/${fileName}`,
+export const getQueryPreviewDocument = (documentId: string): Query => ({
+  endpoint: `/document/preview/${documentId}`,
   method: "GET",
 });

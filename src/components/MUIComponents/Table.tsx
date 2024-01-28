@@ -4,9 +4,10 @@ import { DataGridLocale } from "@/helpers/DataGridLocale";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Patient } from "@/services/Patients/apiPatientsSnippets";
 import { Staff } from "@/services/Staff/apiStaffSnippets";
+import { Transaction } from "@/services/Transactions/apiTransactionsSnippets";
 
 interface TableProps {
-  rows: Patient[] | Staff[];
+  rows: Patient[] | Staff[] | Transaction[];
   columns: GridColDef[];
   loading: boolean;
 }

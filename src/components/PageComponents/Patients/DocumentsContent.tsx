@@ -119,6 +119,13 @@ const DocumentsContent: React.FC<DocumentsContentProps> = ({
       }
     } catch (err) {
       console.log(err);
+      setLoading(false);
+      setAlertMessage("Неуспешно преглеждане");
+      setAlertStatus("error");
+      setTimeout(() => {
+        setAlertStatus(null);
+        setAlertMessage(null);
+      }, 1000);
     }
   };
 
@@ -133,6 +140,13 @@ const DocumentsContent: React.FC<DocumentsContentProps> = ({
       console.log(document);
     } catch (err) {
       console.log(err);
+      setLoading(false);
+      setAlertMessage("Неуспешно изтегляне");
+      setAlertStatus("error");
+      setTimeout(() => {
+        setAlertStatus(null);
+        setAlertMessage(null);
+      }, 1000);
     }
   };
 
@@ -155,6 +169,13 @@ const DocumentsContent: React.FC<DocumentsContentProps> = ({
       }
     } catch (err) {
       console.log(err);
+      setLoading(false);
+      setAlertMessage("Неуспешно изтриване");
+      setAlertStatus("error");
+      setTimeout(() => {
+        setAlertStatus(null);
+        setAlertMessage(null);
+      }, 1000);
     }
   };
 

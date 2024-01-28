@@ -1,42 +1,123 @@
-"use client";
 import { useState } from "react";
-import { ModalType } from "@/app/finance/page";
 import Alert, { AlertStatuses } from "@/components/MUIComponents/Alert";
 import Button from "@/components/MUIComponents/Button";
+import Select from "@/components/MUIComponents/Select";
 import TextField from "@/components/MUIComponents/TextField";
+import {
+  postQueryCreateTransaction,
+  postQueryUpdateTransaction,
+} from "@/services/Transactions/apiTransactionsPostQueries";
+import {
+  Month,
+  PostQueryCreateTransactionSnippet,
+  PostQueryUpdateTransactionSnippet,
+  Transaction,
+} from "@/services/Transactions/apiTransactionsSnippets";
+import { callApi } from "@/services/callApi";
 import { CircularProgress, Stack } from "@mui/material";
 import { Form, Formik } from "formik";
-import { number, object } from "yup";
+import { number, object, string } from "yup";
+import { PostQueryCreateTransactionInput } from "@/services/Transactions/apiTransactionsInputs";
+import { ModalType } from "@/app/finance/page";
 
 const fieldValidation = object({
-  value: number()
-    .typeError("Моля, въведете правилна сума")
-    .required("Полето е задължително"),
+  title: string().required("Полето е задължително"),
+  amount: number().required("Полето е задължително"),
+  type: string().required("Полето е задължително"),
+  category: string().required("Полето е задължително"),
 });
 
 type FinanceFormValues = {
-  value: string;
+  title: string;
+  amount: number;
+  type: string;
+  category: string;
 };
 
-interface FinanceModalContentProps {
+interface FinanceFormProps {
   modalType: ModalType;
+  modalData: Transaction | null;
+  setTransactionsData: React.Dispatch<React.SetStateAction<Transaction[]>>;
+  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FinanceModalContent: React.FC<FinanceModalContentProps> = ({
+const FinanceForm: React.FC<FinanceFormProps> = ({
   modalType,
+  modalData,
+  setTransactionsData,
+  setModalOpen,
 }) => {
   const [formStatus, setFormStatus] = useState<AlertStatuses>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const initialValues: FinanceFormValues = {
-    value: "",
+    title: modalData ? modalData.title : "",
+    amount: modalData ? modalData.amount : 0,
+    type: modalData ? modalData.type : "",
+    category: modalData ? modalData.category : "",
   };
 
   const handleFormSubmit = async (values: FinanceFormValues) => {
-    setLoading(true);
-    setFormStatus(null);
-    setAlertMessage(null);
-    console.log(values);
+    try {
+      setLoading(true);
+      setFormStatus(null);
+      setAlertMessage(null);
+
+      const body: PostQueryCreateTransactionInput = {
+        title: values.title,
+        amount: values.amount,
+        type: values.type as "income" | "expense",
+        category: values.category as
+          | "electricity"
+          | "water"
+          | "internet"
+          | "other",
+        month: new Date()
+          .toLocaleString("en-US", { month: "long" })
+          .toLowerCase() as Month,
+        year: new Date().getFullYear().toString(),
+      };
+
+      if (modalType === "create") {
+        const newTransaction = await callApi<PostQueryCreateTransactionSnippet>(
+          {
+            query: postQueryCreateTransaction(body),
+          }
+        );
+
+        if (newTransaction.success) {
+          setTransactionsData((prev) => [newTransaction.data, ...prev]);
+          setFormStatus("success");
+          setAlertMessage("Успешно добавихте транзакция!");
+          setLoading(false);
+          setModalOpen(false);
+        }
+      } else if (modalType === "edit" && modalData) {
+        const updatedTransaction =
+          await callApi<PostQueryUpdateTransactionSnippet>({
+            query: postQueryUpdateTransaction(modalData._id, body),
+          });
+
+        if (updatedTransaction.success) {
+          setTransactionsData((prev) =>
+            prev.map((transaction) =>
+              transaction._id === updatedTransaction.data._id
+                ? updatedTransaction.data
+                : transaction
+            )
+          );
+          setFormStatus("success");
+          setAlertMessage("Успешно редактирахте транзакция!");
+          setLoading(false);
+          setModalOpen(false);
+        }
+      }
+    } catch (err) {
+      console.log((err as Error).message);
+      setFormStatus("error");
+      setAlertMessage("Възникна грешка, моля опитайте отново!");
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,22 +130,59 @@ const FinanceModalContent: React.FC<FinanceModalContentProps> = ({
         >
           {({ handleSubmit, handleChange, touched, errors, values }) => (
             <Form onSubmit={handleSubmit}>
-              <Stack gap={0} mt={3}>
+              <Stack spacing={3} mt={3}>
                 <TextField
-                  name="value"
-                  label={
-                    modalType === "income"
-                      ? "Въведете приход"
-                      : "Въведете разход"
-                  }
-                  error={touched["value"] && !!errors["value"]}
-                  helperText={touched["value"] && errors["value"]}
+                  name="title"
+                  label="Заглавие"
+                  error={touched["title"] && !!errors["title"]}
+                  helperText={touched["title"] && errors["title"]}
                   onChange={handleChange}
-                  value={values.value}
-                  type="value"
+                  value={values.title}
+                  type="title"
                 />
 
-                <Button message="Вход" type="submit" sx={{ mt: 4, mb: 1 }} />
+                <TextField
+                  name="amount"
+                  label="Сума"
+                  error={touched["amount"] && !!errors["amount"]}
+                  helperText={touched["amount"] && errors["amount"]}
+                  onChange={handleChange}
+                  value={values.amount.toString()}
+                  type="number"
+                />
+
+                <Select
+                  name="type"
+                  label="Тип"
+                  selectValues={[
+                    { label: "Приход", value: "income" },
+                    { label: "Разход", value: "expense" },
+                  ]}
+                  value={values.type}
+                  helperText={touched["type"] && errors["type"]}
+                  error={touched["type"] && !!errors["type"]}
+                  onChange={handleChange}
+                />
+
+                <Select
+                  name="category"
+                  label="Категория"
+                  selectValues={[
+                    { label: "Ток", value: "electricity" },
+                    { label: "Вода", value: "water" },
+                    { label: "Интернет", value: "internet" },
+                    { label: "Друго", value: "other" },
+                  ]}
+                  value={values.category}
+                  helperText={touched["category"] && errors["category"]}
+                  error={touched["category"] && !!errors["category"]}
+                  onChange={handleChange}
+                />
+
+                <Button
+                  message={modalType === "create" ? "Добави" : "Промени"}
+                  type="submit"
+                />
 
                 <Alert
                   message={alertMessage}
@@ -84,4 +202,4 @@ const FinanceModalContent: React.FC<FinanceModalContentProps> = ({
   );
 };
 
-export default FinanceModalContent;
+export default FinanceForm;

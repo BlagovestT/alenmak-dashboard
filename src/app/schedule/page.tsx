@@ -23,7 +23,7 @@ const SchedulePage = () => {
         const filteredStaffData = staffData.data.map((staff) => ({
           staff_id: staff._id,
           title: `${staff.first_name} ${staff.last_name}`,
-          salary: staff.salary,
+          salary: staff.status,
           avatar: `${staff.first_name.charAt(0).toUpperCase()}${staff.last_name
             .charAt(0)
             .toUpperCase()}`,

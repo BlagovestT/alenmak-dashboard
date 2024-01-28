@@ -3,6 +3,7 @@ import Alert, { AlertStatuses } from "@/components/MUIComponents/Alert";
 import Button from "@/components/MUIComponents/Button";
 import TextField from "@/components/MUIComponents/TextField";
 import { signIn } from "@/services/Auth/auth";
+import { SignInSnippet } from "@/services/Auth/authTypes";
 import { CircularProgress, Paper, Stack, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import Image from "next/image";
@@ -40,7 +41,13 @@ const LoginPage = () => {
       setFormStatus(null);
       setAlertMessage(null);
 
-      await signIn(values.email, values.password);
+      const user: SignInSnippet = await signIn(values.email, values.password);
+
+      if (!user.success) {
+        setTimeout(() => {
+          throw new Error("Невалидни данни, моля опитайте отново!");
+        }, 500);
+      }
     } catch (err) {
       console.log((err as Error).message);
       setFormStatus("error");
