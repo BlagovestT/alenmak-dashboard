@@ -1,7 +1,6 @@
 import {
   DefaultRecourse,
   FieldProps,
-  ProcessedEvent,
   ResourceFields,
 } from "@aldabil/react-scheduler/types";
 import { DayProps } from "@aldabil/react-scheduler/views/Day";
@@ -28,16 +27,6 @@ export const DAY: DayProps = {
   endHour: 24,
   step: 60,
 };
-
-export const EVENTS: ProcessedEvent[] = [
-  {
-    event_id: 1,
-    title: "Event 1",
-    start: new Date(new Date(new Date().setHours(9)).setMinutes(30)),
-    end: new Date(new Date(new Date().setHours(10)).setMinutes(30)),
-    staff_id: "65af8beb3a000fc51d97e8ea",
-  },
-];
 
 export const RESOURCE_FIELDS: ResourceFields = {
   idField: "staff_id",

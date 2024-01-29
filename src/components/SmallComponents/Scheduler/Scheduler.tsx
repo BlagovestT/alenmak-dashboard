@@ -40,7 +40,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
   loading,
   showResources,
 }) => {
-  const fetchRemote = async (): Promise<ProcessedEvent[]> => {
+  const handleGetAllEvents = async (): Promise<ProcessedEvent[]> => {
     return new Promise(async (res) => {
       try {
         const eventsData = await callApi<GetQueryAllEventsSnippet>({
@@ -65,7 +65,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
     });
   };
 
-  const handleConfirm = async (
+  const handleCreateEditConfirm = async (
     event: ProcessedEvent,
     action: EventActions
   ): Promise<ProcessedEvent> => {
@@ -109,7 +109,36 @@ const Scheduler: React.FC<SchedulerProps> = ({
     });
   };
 
-  const handleDelete = async (deletedId: string): Promise<string> => {
+  const handleEventDragged = async (
+    droppedOn: Date,
+    updatedEvent: ProcessedEvent,
+    originalEvent: ProcessedEvent
+  ): Promise<void | ProcessedEvent> => {
+    return new Promise(async (res) => {
+      try {
+        const newEvent = await callApi<PostQueryUpdateEventSnippet>({
+          query: postQueryUpdateEvent(
+            {
+              title: originalEvent.title,
+              start: updatedEvent.start,
+              end: updatedEvent.end,
+              staff_id: originalEvent.staff_id,
+              color: originalEvent.color || "",
+            },
+            originalEvent.event_id.toString()
+          ),
+        });
+
+        if (newEvent.success) {
+          res(newEvent.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  };
+
+  const handleEventDelete = async (deletedId: string): Promise<string> => {
     return new Promise(async (res: any) => {
       try {
         const deletedEvent = await callApi<PostQueryDeleteEventSnippet>({
@@ -127,7 +156,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
 
   return (
     <MUIScheduler
-      getRemoteEvents={fetchRemote}
+      getRemoteEvents={handleGetAllEvents}
       resourceViewMode={resourceViewMode}
       view={view}
       events={events ? events : []}
@@ -140,8 +169,9 @@ const Scheduler: React.FC<SchedulerProps> = ({
       month={MONTH}
       week={WEEK}
       day={DAY}
-      onConfirm={handleConfirm}
-      onDelete={handleDelete}
+      onConfirm={handleCreateEditConfirm}
+      onDelete={handleEventDelete}
+      onEventDrop={handleEventDragged}
       resourceHeaderComponent={(resource) => (
         <SchedulerResourceHeader resource={resource} />
       )}
