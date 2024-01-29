@@ -11,6 +11,7 @@ import {
   Month,
   PostQueryCreateTransactionSnippet,
   PostQueryUpdateTransactionSnippet,
+  TotalMonthYear,
   Transaction,
 } from "@/services/Transactions/apiTransactionsSnippets";
 import { callApi } from "@/services/callApi";
@@ -37,6 +38,9 @@ type FinanceFormValues = {
 interface FinanceFormProps {
   modalType: ModalType;
   modalData: Transaction | null;
+  setTotalIncomeAndExpenses: React.Dispatch<
+    React.SetStateAction<TotalMonthYear | undefined>
+  >;
   setTransactionsData: React.Dispatch<React.SetStateAction<Transaction[]>>;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -44,6 +48,7 @@ interface FinanceFormProps {
 const FinanceForm: React.FC<FinanceFormProps> = ({
   modalType,
   modalData,
+  setTotalIncomeAndExpenses,
   setTransactionsData,
   setModalOpen,
 }) => {
@@ -91,6 +96,17 @@ const FinanceForm: React.FC<FinanceFormProps> = ({
           setAlertMessage("Успешно добавихте транзакция!");
           setLoading(false);
           setModalOpen(false);
+
+          setTotalIncomeAndExpenses((prev: TotalMonthYear | undefined) => {
+            if (!prev) return;
+            return {
+              totalIncome: prev.totalIncome + newTransaction.data.amount,
+              totalExpenses: prev.totalExpenses,
+              totalYearIncome:
+                prev.totalYearIncome + newTransaction.data.amount,
+              totalYearExpenses: prev.totalYearExpenses,
+            };
+          });
         }
       } else if (modalType === "edit" && modalData) {
         const updatedTransaction =
@@ -110,6 +126,18 @@ const FinanceForm: React.FC<FinanceFormProps> = ({
           setAlertMessage("Успешно редактирахте транзакция!");
           setLoading(false);
           setModalOpen(false);
+
+          setTotalIncomeAndExpenses((prev: TotalMonthYear | undefined) => {
+            if (!prev) return;
+            return {
+              totalIncome: prev.totalIncome,
+              totalExpenses:
+                prev.totalExpenses + updatedTransaction.data.amount,
+              totalYearIncome: prev.totalYearIncome,
+              totalYearExpenses:
+                prev.totalYearExpenses + updatedTransaction.data.amount,
+            };
+          });
         }
       }
     } catch (err) {

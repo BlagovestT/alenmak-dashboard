@@ -32,13 +32,13 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
         <Bar
           dataKey="totalIncome"
           fill={theme.palette.primary.light}
-          name="Приход"
+          name="Приходи"
           unit=" лв"
         />
         <Bar
           dataKey="totalExpenses"
           fill={theme.palette.secondary.light}
-          name="Разход"
+          name="Разходи"
           unit=" лв"
         />
       </BarChartComponent>

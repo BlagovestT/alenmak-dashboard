@@ -47,7 +47,7 @@ const SchedulerResourceHeader: React.FC<SchedulerResourceHeaderProps> = ({
           variant="body2"
           color={theme.palette.common.black}
         >
-          Длъжност
+          {resource.role}
         </Typography>
       </Stack>
     </Stack>

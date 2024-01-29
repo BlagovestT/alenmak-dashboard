@@ -4,14 +4,17 @@ import { useEffect, useState } from "react";
 import { Box, CircularProgress, Stack } from "@mui/material";
 import PageHeader from "@/components/SmallComponents/PageHeader/PageHeader";
 import Scheduler from "@/components/SmallComponents/Scheduler/Scheduler";
-import { EVENTS } from "@/components/SmallComponents/Scheduler/schedulerData";
 import { callApi } from "@/services/callApi";
 import { GetQueryStaffMembersSnippet } from "@/services/Staff/apiStaffSnippets";
 import { getQueryStaffMembers } from "@/services/Staff/apiStaffGetQueries";
 import { DefaultRecourse } from "@aldabil/react-scheduler/types";
+import Button from "@/components/MUIComponents/Button";
+
+type SchedulerViewMode = "scheduler" | "staffScheduler";
 
 const SchedulePage = () => {
   const [resourcesData, setResourcesData] = useState<DefaultRecourse[]>();
+  const [view, setView] = useState<SchedulerViewMode>("scheduler");
 
   useEffect(() => {
     (async () => {
@@ -28,24 +31,53 @@ const SchedulePage = () => {
             .charAt(0)
             .toUpperCase()}`,
           color: "#ab2d2d",
+          role: staff.occupation,
         }));
 
         setResourcesData(filteredStaffData);
       }
     })();
   }, []);
-
   return (
     <>
-      <PageHeader header="График" subheader="График на вашите служители" />
+      <PageHeader
+        header="График"
+        subheader="График на вашите служители"
+        action={
+          <Button
+            message={view === "scheduler" ? "График на Служители" : "График"}
+            onClick={() =>
+              setView((prevView) =>
+                prevView === "scheduler" ? "staffScheduler" : "scheduler"
+              )
+            }
+          />
+        }
+      />
 
       <Box width="100%" px={4} py={2}>
-        {resourcesData ? (
-          <Scheduler events={EVENTS} resources={resourcesData} />
-        ) : (
-          <Stack height="600px" justifyContent="center" alignItems="center">
-            <CircularProgress size="8rem" />
-          </Stack>
+        {view === "scheduler" && (
+          <>
+            {resourcesData ? (
+              <Scheduler resources={resourcesData} showResources={false} />
+            ) : (
+              <Stack height="600px" justifyContent="center" alignItems="center">
+                <CircularProgress size="8rem" />
+              </Stack>
+            )}
+          </>
+        )}
+
+        {view === "staffScheduler" && (
+          <>
+            {resourcesData ? (
+              <Scheduler resources={resourcesData} showResources={true} />
+            ) : (
+              <Stack height="600px" justifyContent="center" alignItems="center">
+                <CircularProgress size="8rem" />
+              </Stack>
+            )}
+          </>
         )}
       </Box>
     </>

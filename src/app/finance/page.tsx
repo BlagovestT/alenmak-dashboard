@@ -415,6 +415,7 @@ const Finance = () => {
           <FinanceModalContent
             modalType={modalType}
             modalData={modalData && modalData}
+            setTotalIncomeAndExpenses={setTotalIncomeAndExpenses}
             setTransactionsData={setTransactionsData}
             setModalOpen={setModalOpen}
           />

@@ -3,10 +3,16 @@ export type Staff = {
   first_name: string;
   last_name: string;
   gender: "male" | "female";
-  age: number;
-  paid: "paid" | "unpaid";
-  status: "active" | "inactive" | "released" | "deceased";
-  group: "група а" | "група б";
+  occupation:
+    | "Санитар"
+    | "Медицинска Сестра"
+    | "Управител"
+    | "Готвач"
+    | "Социален Работник"
+    | "Рехабилитатор"
+    | "Болногледач";
+  salary: number;
+  status: "paid" | "unpaid";
   createdAt: Date;
   updatedAt: Date;
   __v: number;
