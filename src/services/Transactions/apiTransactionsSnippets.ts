@@ -22,6 +22,19 @@ export type Transaction = {
   updatedAt: Date;
 };
 
+export type TotalMonthYear = {
+  totalIncome: number;
+  totalExpenses: number;
+  totalYearIncome: number;
+  totalYearExpenses: number;
+};
+
+export type TotalChartMonthYear = {
+  month: Month;
+  totalIncome: number;
+  totalExpenses: number;
+};
+
 export type Month =
   | "january"
   | "february"
@@ -75,3 +88,11 @@ export type PostQueryUpdateTransactionSnippet = {
   success: boolean;
   data: Transaction;
 };
+
+export type GetQueryTotalIncomeAndExpensesForMonthAndYearSnippter = {
+  success: boolean;
+  data: TotalMonthYear;
+};
+
+export type GetQueryTotalIncomeAndExpensesForYearSnippet =
+  TotalChartMonthYear[];

@@ -1,3 +1,4 @@
+import { TotalChartMonthYear } from "@/services/Transactions/apiTransactionsSnippets";
 import { useTheme } from "@mui/material";
 import {
   Bar,
@@ -9,10 +10,9 @@ import {
   YAxis,
   BarChart as BarChartComponent,
 } from "recharts";
-import { FinanceDateType } from "@/app/finance/page";
 
 interface BarChartProps {
-  data: FinanceDateType[];
+  data: TotalChartMonthYear[];
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data }) => {
@@ -30,14 +30,16 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
         <Tooltip />
         <Legend />
         <Bar
-          dataKey="earnings"
+          dataKey="totalIncome"
           fill={theme.palette.primary.light}
           name="Приход"
+          unit=" лв"
         />
         <Bar
-          dataKey="expenses"
+          dataKey="totalExpenses"
           fill={theme.palette.secondary.light}
           name="Разход"
+          unit=" лв"
         />
       </BarChartComponent>
     </ResponsiveContainer>

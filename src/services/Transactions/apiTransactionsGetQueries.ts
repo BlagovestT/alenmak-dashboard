@@ -11,6 +11,19 @@ export const getQuerySingleTransaction = (transactionId: string): Query => ({
   method: "GET",
 });
 
+export const getQueryTotalIncomeAndExpensesForMonthAndYear = (
+  month: Month,
+  year: string
+): Query => ({
+  endpoint: `/transactions/total/${month}/${year}`,
+  method: "GET",
+});
+
+export const getQueryTotalIncomeAndExpensesForYear = (year: string): Query => ({
+  endpoint: `/transactions/total/${year}`,
+  method: "GET",
+});
+
 export const getQueryMonthlyIncome = (month: Month, year: string): Query => ({
   endpoint: `/transactions/income/month/${month}/${year}`,
   method: "GET",

@@ -20,19 +20,17 @@ import FinanceModalContent from "@/components/PageComponents/Finance/FinanceModa
 import { callApi } from "@/services/callApi";
 import {
   getQueryAllTransactions,
-  getQueryMonthlyExpenses,
-  getQueryMonthlyIncome,
-  getQueryYearlyExpenses,
-  getQueryYearlyIncome,
+  getQueryTotalIncomeAndExpensesForMonthAndYear,
+  getQueryTotalIncomeAndExpensesForYear,
 } from "@/services/Transactions/apiTransactionsGetQueries";
 import {
   GetQueryAllTransactionsSnippet,
-  GetQueryMonthlyExpensesSnippet,
-  GetQueryMonthlyIncomeSnippet,
-  GetQueryYearlyExpensesSnippet,
-  GetQueryYearlyIncomeSnippet,
+  GetQueryTotalIncomeAndExpensesForMonthAndYearSnippter,
+  GetQueryTotalIncomeAndExpensesForYearSnippet,
   Month,
   PostQueryDeleteTransactionSnippet,
+  TotalChartMonthYear,
+  TotalMonthYear,
   Transaction,
 } from "@/services/Transactions/apiTransactionsSnippets";
 import Table from "@/components/MUIComponents/Table";
@@ -45,33 +43,11 @@ import { postQueryDeleteTransaction } from "@/services/Transactions/apiTransacti
 
 export type ModalType = "create" | "edit";
 
-export interface FinanceDateType {
-  month: string;
-  earnings: number;
-  expenses: number;
-}
-
-const FINANCE_DATA: FinanceDateType[] = [
-  { month: "Януари", earnings: 2000, expenses: 1500 },
-  { month: "Февруари", earnings: 1800, expenses: 1200 },
-  { month: "Март", earnings: 2200, expenses: 1600 },
-  { month: "Април", earnings: 2500, expenses: 1800 },
-  { month: "Май", earnings: 2300, expenses: 1400 },
-  { month: "Юни", earnings: 2000, expenses: 1300 },
-  { month: "Юли", earnings: 2100, expenses: 1500 },
-  { month: "Август", earnings: 2400, expenses: 1700 },
-  { month: "Септември", earnings: 2600, expenses: 1900 },
-  { month: "Октомври", earnings: 2800, expenses: 2000 },
-  { month: "Ноември", earnings: 3000, expenses: 2200 },
-  { month: "Декември", earnings: 3200, expenses: 2400 },
-];
-
 const Finance = () => {
   const [transactionsData, setTransactionsData] = useState<Transaction[]>([]);
-  const [monthlyIncome, setMonthlyIncome] = useState<number>();
-  const [monthlyExpenses, setMonthlyExpenses] = useState<number>();
-  const [yearlyIncome, setYearlyIncome] = useState<number>();
-  const [yearlyExpenses, setYearlyExpenses] = useState<number>();
+  const [totalIncomeAndExpenses, setTotalIncomeAndExpenses] =
+    useState<TotalMonthYear>();
+  const [chartData, setChartData] = useState<TotalChartMonthYear[]>();
   const [openModal, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>("create");
   const [modalData, setModalData] = useState<Transaction | null>(null);
@@ -193,27 +169,18 @@ const Finance = () => {
         .toLowerCase();
       const currentYear = new Date().getFullYear();
 
-      const [monthlyIncome, monthlyExpenses, yearlyIncome, yearlyExpenses] =
-        await Promise.all([
-          callApi<GetQueryMonthlyIncomeSnippet>({
-            query: getQueryMonthlyIncome(
-              currentMonth.toString() as Month,
-              currentYear.toString()
-            ),
-          }),
-          callApi<GetQueryMonthlyExpensesSnippet>({
-            query: getQueryMonthlyExpenses(
-              currentMonth.toString() as Month,
-              currentYear.toString()
-            ),
-          }),
-          callApi<GetQueryYearlyIncomeSnippet>({
-            query: getQueryYearlyIncome(currentYear.toString()),
-          }),
-          callApi<GetQueryYearlyExpensesSnippet>({
-            query: getQueryYearlyExpenses(currentYear.toString()),
-          }),
-        ]);
+      const totalIncomeAndExpenses =
+        await callApi<GetQueryTotalIncomeAndExpensesForMonthAndYearSnippter>({
+          query: getQueryTotalIncomeAndExpensesForMonthAndYear(
+            currentMonth as Month,
+            currentYear.toString()
+          ),
+        });
+
+      const totalIncomeAndExpensesForYearData =
+        await callApi<GetQueryTotalIncomeAndExpensesForYearSnippet>({
+          query: getQueryTotalIncomeAndExpensesForYear(currentYear.toString()),
+        });
 
       if (transactionsData.success) {
         const sortedTransactionsData = transactionsData.data.sort((a, b) => {
@@ -226,20 +193,12 @@ const Finance = () => {
         setLoading(false);
       }
 
-      if (monthlyIncome.success) {
-        setMonthlyIncome(monthlyIncome.data);
+      if (totalIncomeAndExpenses.success) {
+        setTotalIncomeAndExpenses(totalIncomeAndExpenses.data);
       }
 
-      if (monthlyExpenses.success) {
-        setMonthlyExpenses(monthlyExpenses.data);
-      }
-
-      if (yearlyIncome.success) {
-        setYearlyIncome(yearlyIncome.data);
-      }
-
-      if (yearlyExpenses.success) {
-        setYearlyExpenses(yearlyExpenses.data);
+      if (totalIncomeAndExpensesForYearData) {
+        setChartData(totalIncomeAndExpensesForYearData);
       }
     })();
   }, []);
@@ -337,11 +296,11 @@ const Finance = () => {
                 alignItems="center"
                 flexWrap="wrap"
               >
-                {monthlyIncome ? (
+                {totalIncomeAndExpenses?.totalIncome ? (
                   <FinanceWidget
                     type="income"
                     title="Месечни Приходи"
-                    amount={monthlyIncome}
+                    amount={totalIncomeAndExpenses.totalIncome}
                     date={
                       new Date()
                         .toLocaleString("bg-BG", {
@@ -365,11 +324,11 @@ const Finance = () => {
                   />
                 )}
 
-                {monthlyExpenses ? (
+                {totalIncomeAndExpenses?.totalExpenses ? (
                   <FinanceWidget
                     type="expenses"
                     title="Месечни Разходи"
-                    amount={monthlyExpenses}
+                    amount={totalIncomeAndExpenses.totalExpenses}
                     date={
                       new Date()
                         .toLocaleString("bg-BG", {
@@ -393,11 +352,11 @@ const Finance = () => {
                   />
                 )}
 
-                {yearlyIncome ? (
+                {totalIncomeAndExpenses?.totalYearIncome ? (
                   <FinanceWidget
                     type="income"
                     title="Годишни Приходи"
-                    amount={yearlyIncome}
+                    amount={totalIncomeAndExpenses.totalYearIncome}
                     date={new Date().getFullYear().toString()}
                   />
                 ) : (
@@ -409,11 +368,11 @@ const Finance = () => {
                   />
                 )}
 
-                {yearlyExpenses ? (
+                {totalIncomeAndExpenses?.totalYearExpenses ? (
                   <FinanceWidget
                     type="expenses"
                     title="Годишни Разходи"
-                    amount={yearlyExpenses}
+                    amount={totalIncomeAndExpenses.totalYearExpenses}
                     date={new Date().getFullYear().toString()}
                   />
                 ) : (
@@ -431,7 +390,17 @@ const Finance = () => {
               <Typography variant="h3" component="h4" mb={2}>
                 Годишен Финансов Отчет
               </Typography>
-              <BarChart data={FINANCE_DATA} />
+
+              {chartData ? (
+                <BarChart data={chartData} />
+              ) : (
+                <Skeleton
+                  variant="rounded"
+                  animation="wave"
+                  width="100%"
+                  height={400}
+                />
+              )}
             </Paper>
           </>
         )}

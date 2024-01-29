@@ -220,7 +220,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
                   helperText={touched["salary"] && errors["salary"]}
                   onChange={handleChange}
                   value={values.salary}
-                  type="text"
+                  type="number"
                 />
 
                 <Button

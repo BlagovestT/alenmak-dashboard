@@ -218,7 +218,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                   helperText={touched["age"] && errors["age"]}
                   onChange={handleChange}
                   value={values.age}
-                  type="text"
+                  type="number"
                 />
 
                 <Select
