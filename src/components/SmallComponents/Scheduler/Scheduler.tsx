@@ -19,6 +19,7 @@ import {
 } from "@/services/Events/apiEventsPostQueries";
 import SchedulerEditor from "./SchedulerEditor";
 import bg from "date-fns/locale/bg";
+import SchedulerVewerTitle from "./SchedulerVewerTitle";
 
 interface SchedulerProps {
   events?: ProcessedEvent[];
@@ -53,7 +54,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
             title: originalEvent.title,
             start: updatedEvent.start,
             end: updatedEvent.end,
-            staff_id: originalEvent.staff_id,
+            staff_id: updatedEvent.staff_id,
             color: originalEvent.color || "",
           },
           originalEvent.event_id.toString()
@@ -73,6 +74,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
                   ...originalEvent,
                   start: updatedEvent.start,
                   end: updatedEvent.end,
+                  staff_id: updatedEvent.staff_id,
                 },
               ];
             }
@@ -123,6 +125,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
       customEditor={(scheduler) => (
         <SchedulerEditor scheduler={scheduler} resources={resources} />
       )}
+      viewerTitleComponent={(event) => <SchedulerVewerTitle event={event} />}
     />
   );
 };
