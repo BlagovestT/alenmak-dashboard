@@ -22,6 +22,8 @@ import {
   postQueryUpdateEvent,
 } from "@/services/Events/apiEventsPostQueries";
 import { getQueryAllEvents } from "@/services/Events/apiEventsGetQueries";
+import SchedulerEditor from "./SchedulerEditor";
+import bg from "date-fns/locale/bg";
 
 interface SchedulerProps {
   events?: ProcessedEvent[];
@@ -172,8 +174,12 @@ const Scheduler: React.FC<SchedulerProps> = ({
       onConfirm={handleCreateEditConfirm}
       onDelete={handleEventDelete}
       onEventDrop={handleEventDragged}
+      locale={bg}
       resourceHeaderComponent={(resource) => (
         <SchedulerResourceHeader resource={resource} />
+      )}
+      customEditor={(scheduler) => (
+        <SchedulerEditor scheduler={scheduler} resources={resources} />
       )}
     />
   );

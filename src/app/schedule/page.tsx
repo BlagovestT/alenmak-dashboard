@@ -38,6 +38,7 @@ const SchedulePage = () => {
       }
     })();
   }, []);
+
   return (
     <>
       <PageHeader
@@ -45,7 +46,9 @@ const SchedulePage = () => {
         subheader="График на вашите служители"
         action={
           <Button
-            message={view === "scheduler" ? "График на Служители" : "График"}
+            message={
+              view === "scheduler" ? "График на Служители" : "Общ График"
+            }
             onClick={() =>
               setView((prevView) =>
                 prevView === "scheduler" ? "staffScheduler" : "scheduler"

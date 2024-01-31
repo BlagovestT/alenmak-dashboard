@@ -1,3 +1,5 @@
+import { Shift } from "@/components/SmallComponents/Scheduler/SchedulerEditor";
+
 export const getCookie = (name: string) => {
   if (typeof document !== "undefined") {
     const cookies: string[] = document.cookie.split("; ");
@@ -42,6 +44,71 @@ export const formatDate = (date: Date) => {
   const minutes = dateObject.getMinutes().toString().padStart(2, "0");
   const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;
   return formattedDate;
+};
+
+export const getShiftStartEndDate = (startDate: Date, shift: Shift) => {
+  switch (shift) {
+    case "firstShift":
+      return {
+        start: new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          7,
+          0,
+          0
+        ),
+        end: new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          19,
+          0,
+          0
+        ),
+      };
+    case "secondShift":
+      return {
+        start: new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          19,
+          0,
+          0
+        ),
+        end: new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 1,
+          7,
+          0,
+          0
+        ),
+      };
+
+    case "fullDay":
+      return {
+        start: new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          7,
+          0,
+          0
+        ),
+        end: new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 1,
+          7,
+          0,
+          0
+        ),
+      };
+    default:
+      break;
+  }
 };
 
 export const USER_ID = getCookie("id");
