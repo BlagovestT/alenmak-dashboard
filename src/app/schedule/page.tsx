@@ -7,20 +7,43 @@ import Scheduler from "@/components/SmallComponents/Scheduler/Scheduler";
 import { callApi } from "@/services/callApi";
 import { GetQueryStaffMembersSnippet } from "@/services/Staff/apiStaffSnippets";
 import { getQueryStaffMembers } from "@/services/Staff/apiStaffGetQueries";
-import { DefaultRecourse } from "@aldabil/react-scheduler/types";
+import {
+  DefaultRecourse,
+  ProcessedEvent,
+} from "@aldabil/react-scheduler/types";
 import Button from "@/components/MUIComponents/Button";
+import { GetQueryAllEventsSnippet } from "@/services/Events/apiEventsSnippets";
+import { getQueryAllEvents } from "@/services/Events/apiEventsGetQueries";
 
 type SchedulerViewMode = "scheduler" | "staffScheduler";
 
 const SchedulePage = () => {
+  const [eventsData, setEventsData] = useState<ProcessedEvent[]>();
   const [resourcesData, setResourcesData] = useState<DefaultRecourse[]>();
   const [view, setView] = useState<SchedulerViewMode>("scheduler");
 
   useEffect(() => {
     (async () => {
+      const eventsData = await callApi<GetQueryAllEventsSnippet>({
+        query: getQueryAllEvents,
+      });
+
       const staffData = await callApi<GetQueryStaffMembersSnippet>({
         query: getQueryStaffMembers,
       });
+
+      if (eventsData.success) {
+        const filteredEventsData = {
+          ...eventsData,
+          data: eventsData.data.map((event) => ({
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.end),
+          })),
+        };
+
+        setEventsData(filteredEventsData.data);
+      }
 
       if (staffData.success) {
         const filteredStaffData = staffData.data.map((staff) => ({
@@ -62,7 +85,12 @@ const SchedulePage = () => {
         {view === "scheduler" && (
           <>
             {resourcesData ? (
-              <Scheduler resources={resourcesData} showResources={false} />
+              <Scheduler
+                events={eventsData}
+                resources={resourcesData}
+                showResources={false}
+                setEventsData={setEventsData}
+              />
             ) : (
               <Stack height="600px" justifyContent="center" alignItems="center">
                 <CircularProgress size="8rem" />
@@ -74,7 +102,12 @@ const SchedulePage = () => {
         {view === "staffScheduler" && (
           <>
             {resourcesData ? (
-              <Scheduler resources={resourcesData} showResources={true} />
+              <Scheduler
+                events={eventsData}
+                resources={resourcesData}
+                showResources={true}
+                setEventsData={setEventsData}
+              />
             ) : (
               <Stack height="600px" justifyContent="center" alignItems="center">
                 <CircularProgress size="8rem" />

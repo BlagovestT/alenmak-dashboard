@@ -5,23 +5,18 @@ import { SchedulerLocale } from "@/components/SmallComponents/Scheduler/Schedule
 import { View } from "@aldabil/react-scheduler/components/nav/Navigation";
 import {
   DefaultRecourse,
-  EventActions,
   ProcessedEvent,
 } from "@aldabil/react-scheduler/types";
 import SchedulerResourceHeader from "./SchedulerResourceHeader";
 import { callApi } from "@/services/callApi";
 import {
-  GetQueryAllEventsSnippet,
-  PostQueryCreateEventSnippet,
   PostQueryDeleteEventSnippet,
   PostQueryUpdateEventSnippet,
 } from "@/services/Events/apiEventsSnippets";
 import {
-  postQueryCreateEvent,
   postQueryDeleteEvent,
   postQueryUpdateEvent,
 } from "@/services/Events/apiEventsPostQueries";
-import { getQueryAllEvents } from "@/services/Events/apiEventsGetQueries";
 import SchedulerEditor from "./SchedulerEditor";
 import bg from "date-fns/locale/bg";
 
@@ -32,6 +27,9 @@ interface SchedulerProps {
   view?: View;
   resourceViewMode?: "tabs" | "default";
   showResources?: boolean;
+  setEventsData?: React.Dispatch<
+    React.SetStateAction<ProcessedEvent[] | undefined>
+  >;
 }
 
 const Scheduler: React.FC<SchedulerProps> = ({
@@ -41,103 +39,49 @@ const Scheduler: React.FC<SchedulerProps> = ({
   resourceViewMode = "tabs",
   loading,
   showResources,
+  setEventsData,
 }) => {
-  const handleGetAllEvents = async (): Promise<ProcessedEvent[]> => {
-    return new Promise(async (res) => {
-      try {
-        const eventsData = await callApi<GetQueryAllEventsSnippet>({
-          query: getQueryAllEvents,
-        });
-
-        const filteredEventsData = {
-          ...eventsData,
-          data: eventsData.data.map((event) => ({
-            ...event,
-            start: new Date(event.start),
-            end: new Date(event.end),
-          })),
-        };
-
-        if (eventsData.success) {
-          res(filteredEventsData.data);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  };
-
-  const handleCreateEditConfirm = async (
-    event: ProcessedEvent,
-    action: EventActions
-  ): Promise<ProcessedEvent> => {
-    return new Promise(async (res) => {
-      if (action === "edit") {
-        const updatedEvent = await callApi<PostQueryUpdateEventSnippet>({
-          query: postQueryUpdateEvent(
-            {
-              title: event.title,
-              start: event.start,
-              end: event.end,
-              staff_id: event.staff_id,
-              color: "red",
-            },
-            event.event_id.toString()
-          ),
-        });
-
-        if (updatedEvent.success) {
-          res(event);
-        }
-      } else if (action === "create") {
-        const newEvent = await callApi<PostQueryCreateEventSnippet>({
-          query: postQueryCreateEvent({
-            event_id: Math.random().toString(),
-            title: event.title,
-            start: event.start,
-            end: event.end,
-            staff_id: event.staff_id,
-            color: "red",
-          }),
-        });
-
-        if (newEvent.success) {
-          res({
-            ...event,
-            event_id: newEvent.data.event_id,
-          });
-        }
-      }
-    });
-  };
-
   const handleEventDragged = async (
     droppedOn: Date,
     updatedEvent: ProcessedEvent,
     originalEvent: ProcessedEvent
   ): Promise<void | ProcessedEvent> => {
-    return new Promise(async (res) => {
-      try {
-        const newEvent = await callApi<PostQueryUpdateEventSnippet>({
-          query: postQueryUpdateEvent(
-            {
-              title: originalEvent.title,
-              start: updatedEvent.start,
-              end: updatedEvent.end,
-              staff_id: originalEvent.staff_id,
-              color: originalEvent.color || "",
-            },
-            originalEvent.event_id.toString()
-          ),
-        });
+    try {
+      const newEvent = await callApi<PostQueryUpdateEventSnippet>({
+        query: postQueryUpdateEvent(
+          {
+            title: originalEvent.title,
+            start: updatedEvent.start,
+            end: updatedEvent.end,
+            staff_id: originalEvent.staff_id,
+            color: originalEvent.color || "",
+          },
+          originalEvent.event_id.toString()
+        ),
+      });
 
-        if (newEvent.success) {
-          res(newEvent.data);
+      if (newEvent.success) {
+        if (setEventsData) {
+          setEventsData((prev) => {
+            if (prev) {
+              const filteredEvents = prev.filter(
+                (event) => event.event_id !== originalEvent.event_id
+              );
+              return [
+                ...filteredEvents,
+                {
+                  ...originalEvent,
+                  start: updatedEvent.start,
+                  end: updatedEvent.end,
+                },
+              ];
+            }
+          });
         }
-      } catch (err) {
-        console.log(err);
       }
-    });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleEventDelete = async (deletedId: string): Promise<string> => {
@@ -158,7 +102,6 @@ const Scheduler: React.FC<SchedulerProps> = ({
 
   return (
     <MUIScheduler
-      getRemoteEvents={handleGetAllEvents}
       resourceViewMode={resourceViewMode}
       view={view}
       events={events ? events : []}
@@ -171,7 +114,6 @@ const Scheduler: React.FC<SchedulerProps> = ({
       month={MONTH}
       week={WEEK}
       day={DAY}
-      onConfirm={handleCreateEditConfirm}
       onDelete={handleEventDelete}
       onEventDrop={handleEventDragged}
       locale={bg}
