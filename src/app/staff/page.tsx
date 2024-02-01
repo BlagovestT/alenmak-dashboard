@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Container, IconButton, Tooltip, Typography } from "@mui/material";
 import Table from "@/components/MUIComponents/Table";
-import { formatDate } from "@/helpers/helpers";
+import { USER_ROLE, formatDate } from "@/helpers/helpers";
 import { signOut } from "@/services/Auth/auth";
 import { callApi } from "@/services/callApi";
 import { GridColDef } from "@mui/x-data-grid";
@@ -47,6 +47,7 @@ const StaffPage = () => {
   const [modalType, setModalType] = useState<ModalType>("create");
   const [openModal, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string>();
 
   const columns: GridColDef[] = [
     {
@@ -173,6 +174,8 @@ const StaffPage = () => {
     (async () => {
       setLoading(true);
       try {
+        if (USER_ROLE) setUserRole(USER_ROLE);
+
         const staffData = await callApi<GetQueryStaffMembersSnippet>({
           query: getQueryStaffMembers,
         });
@@ -226,7 +229,15 @@ const StaffPage = () => {
       />
 
       <Container>
-        <Table rows={staffData} columns={columns} loading={loading} />
+        <Table
+          rows={staffData}
+          columns={
+            userRole === "admin"
+              ? columns
+              : columns.slice(0, 4).concat(columns.slice(5))
+          }
+          loading={loading}
+        />
 
         <Modal
           modalTitle={
