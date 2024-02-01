@@ -3,17 +3,21 @@ import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 
 interface FinanceWidgetProps {
+  icon?: React.JSX.Element;
   type: string;
   title: string;
   amount: number;
-  date: string;
+  date?: string;
+  currency?: boolean;
 }
 
 const FinanceWidget: React.FC<FinanceWidgetProps> = ({
+  icon,
   type,
   title,
   amount,
   date,
+  currency,
 }) => {
   const theme = useTheme();
 
@@ -21,14 +25,13 @@ const FinanceWidget: React.FC<FinanceWidgetProps> = ({
     <Box
       sx={{
         width: "100%",
-        maxWidth: "300px",
+        maxWidth: "350px",
         display: "inline-block",
         height: "200px",
         backgroundColor:
           type === "income"
             ? theme.palette.primary.light
             : theme.palette.secondary.light,
-        margin: "5px",
         padding: "15px",
         borderRadius: "5px",
       }}
@@ -40,7 +43,11 @@ const FinanceWidget: React.FC<FinanceWidgetProps> = ({
         gap={1}
         mb={1.5}
       >
-        <CurrencyExchangeIcon sx={{ color: theme.palette.common.white }} />
+        {icon ? (
+          icon
+        ) : (
+          <CurrencyExchangeIcon sx={{ color: theme.palette.common.white }} />
+        )}
         <Typography
           component="h4"
           variant="h3"
@@ -58,9 +65,11 @@ const FinanceWidget: React.FC<FinanceWidgetProps> = ({
         alignItems="center"
         gap={1}
       >
-        <PaymentsOutlinedIcon
-          sx={{ fontSize: "3rem", color: theme.palette.common.white }}
-        />
+        {!icon && (
+          <PaymentsOutlinedIcon
+            sx={{ fontSize: "3rem", color: theme.palette.common.white }}
+          />
+        )}
 
         <Typography
           component="h4"
@@ -84,17 +93,19 @@ const FinanceWidget: React.FC<FinanceWidgetProps> = ({
             mt: 5,
           }}
         >
-          ЛВ
+          {currency && "ЛВ"}
         </Typography>
       </Stack>
 
-      <Typography
-        component="h4"
-        variant="h3"
-        sx={{ color: theme.palette.common.white, textAlign: "center" }}
-      >
-        {date}
-      </Typography>
+      {date && (
+        <Typography
+          component="h4"
+          variant="h3"
+          sx={{ color: theme.palette.common.white, textAlign: "center" }}
+        >
+          {date}
+        </Typography>
+      )}
     </Box>
   );
 };

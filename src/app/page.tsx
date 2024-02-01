@@ -1,86 +1,234 @@
-'use client';
-
-import PageHeader from '@/components/SmallComponents/PageHeader/PageHeader';
-import HomeIcon from '@mui/icons-material/Home';
-import Calendar from 'react-calendar'; // TODO: delete the library
-import 'react-calendar/dist/Calendar.css';
-import { Container, Paper, Stack } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import dayjs from 'dayjs';
-import CountWidget from '@/components/PageComponents/Home/CountWidget';
-import TodoList from '@/components/PageComponents/Home/TodoList';
-import { useState } from 'react';
-
-type Todo = {
-  id: number;
-  text: string;
-  completed: boolean;
-};
+"use client";
+import { useEffect, useState } from "react";
+import {
+  Container,
+  Paper,
+  Skeleton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import PageHeader from "@/components/SmallComponents/PageHeader/PageHeader";
+import HomeIcon from "@mui/icons-material/Home";
+import { callApi } from "@/services/callApi";
+import { getQueryStaffMembers } from "@/services/Staff/apiStaffGetQueries";
+import {
+  GetQueryStaffMembersSnippet,
+  Staff,
+} from "@/services/Staff/apiStaffSnippets";
+import {
+  GetQueryPatientsSnippet,
+  Patient,
+} from "@/services/Patients/apiPatientsSnippets";
+import { getQueryPatients } from "@/services/Patients/apiPatientsGetQueries";
+import "dayjs/locale/bg";
+import {
+  GetQueryTotalIncomeAndExpensesForMonthAndYearSnippter,
+  Month,
+  TotalMonthYear,
+} from "@/services/Transactions/apiTransactionsSnippets";
+import { getQueryTotalIncomeAndExpensesForMonthAndYear } from "@/services/Transactions/apiTransactionsGetQueries";
+import FinanceWidget from "@/components/PageComponents/Finance/FinanceWidget";
+import HomeTasksList from "@/components/PageComponents/Home/HomeTasksList";
+import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
+import Groups2OutlinedIcon from "@mui/icons-material/Groups2Outlined";
 
 const Home = () => {
-  const currentDate = dayjs();
+  const theme = useTheme();
+  const [staffData, setStaffData] = useState<Staff[]>();
+  const [patientsData, setPatientsData] = useState<Patient[]>();
+  const [totalIncomeAndExpenses, setTotalIncomeAndExpenses] =
+    useState<TotalMonthYear>();
+  const FINANCE_WIDGETS_DATA = [
+    {
+      type: "income",
+      title: "Месечни Приходи",
+      amount: totalIncomeAndExpenses ? totalIncomeAndExpenses.totalIncome : 0,
+      date: new Date().toLocaleString("bg-BG", {
+        month: "long",
+      }),
+    },
+    {
+      type: "expenses",
+      title: "Месечни Разходи",
+      amount: totalIncomeAndExpenses ? totalIncomeAndExpenses.totalExpenses : 0,
+      date: new Date().toLocaleString("bg-BG", {
+        month: "long",
+      }),
+    },
+    {
+      type: "income",
+      title: "Годишни Приходи",
+      amount: totalIncomeAndExpenses
+        ? totalIncomeAndExpenses.totalYearIncome
+        : 0,
+      date: new Date().getFullYear().toString(),
+    },
+    {
+      type: "expenses",
+      title: "Годишни Разходи",
+      amount: totalIncomeAndExpenses
+        ? totalIncomeAndExpenses.totalYearExpenses
+        : 0,
+      date: new Date().getFullYear().toString(),
+    },
+  ];
 
-  const [staffCount, setStaffCount] = useState(50);
-  const [patientCount, setPatientCount] = useState(100);
+  useEffect(() => {
+    (async () => {
+      try {
+        const staffData = await callApi<GetQueryStaffMembersSnippet>({
+          query: getQueryStaffMembers,
+        });
 
-  const [todos, setTodos] = useState<Todo[]>([
-    { id: 1, text: 'Sample Task 1', completed: false },
-    { id: 2, text: 'Sample Task 2', completed: true },
-  ]);
+        const patientsData = await callApi<GetQueryPatientsSnippet>({
+          query: getQueryPatients,
+        });
 
-  const handleAddTodo = (text: string) => {
-    const newTodo: Todo = { id: Date.now(), text, completed: false };
-    setTodos([...todos, newTodo]);
-  };
+        const currentMonth = new Date()
+          .toLocaleString("en-US", {
+            month: "long",
+          })
+          .toLowerCase();
+        const currentYear = new Date().getFullYear();
 
-  const handleEditTodo = (id: number, newText: string) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, text: newText } : todo
-      )
-    );
-  };
+        const totalIncomeAndExpenses =
+          await callApi<GetQueryTotalIncomeAndExpensesForMonthAndYearSnippter>({
+            query: getQueryTotalIncomeAndExpensesForMonthAndYear(
+              currentMonth as Month,
+              currentYear.toString()
+            ),
+          });
 
-  const handleDeleteTodo = (id: number) => {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-  };
+        if (staffData.success) {
+          setStaffData(staffData.data);
+        }
 
-  const handleToggleComplete = (id: number) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
+        if (patientsData.success) {
+          setPatientsData(patientsData.data);
+        }
+
+        if (totalIncomeAndExpenses.success) {
+          setTotalIncomeAndExpenses(totalIncomeAndExpenses.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
 
   return (
     <>
       <PageHeader
-        header='Добре дошли!'
-        subheader='Управлявайте ежедневните си задачи със стил!'
-        icon={<HomeIcon sx={{ fontSize: '2.5rem' }} />}
+        header="Добре дошли!"
+        subheader="Управлявайте ежедневните си задачи със стил!"
+        icon={<HomeIcon sx={{ fontSize: "2.5rem" }} />}
       />
       <Container>
         <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-          <Stack direction='row' justifyContent='space-between'>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <StaticDatePicker
-                defaultValue={dayjs(currentDate)}
-                sx={{ border: '1px solid #ccc', borderRadius: '8px' }}
-              />
-            </LocalizationProvider>
-            <CountWidget staffCount={staffCount} patientCount={patientCount} />
+          <Stack direction="row" justifyContent="space-between" gap={5}>
+            <Stack flex={1} gap={2}>
+              <Typography component="h4" variant="h3">
+                Задачи
+              </Typography>
+              <HomeTasksList />
+            </Stack>
+
+            <Stack gap={2}>
+              <Typography component="h4" variant="h3">
+                Общ Анализ
+              </Typography>
+              {staffData ? (
+                <FinanceWidget
+                  type="income"
+                  title="Общ Брой Служители"
+                  amount={staffData.length}
+                  icon={
+                    <PeopleOutlineOutlinedIcon
+                      sx={{
+                        fontSize: "2rem",
+                        color: theme.palette.common.white,
+                      }}
+                    />
+                  }
+                />
+              ) : (
+                <Skeleton
+                  variant="rounded"
+                  animation="wave"
+                  width={350}
+                  height={200}
+                />
+              )}
+
+              {patientsData ? (
+                <FinanceWidget
+                  type="income"
+                  title="Общ Брой Пациенти"
+                  amount={patientsData.length}
+                  icon={
+                    <Groups2OutlinedIcon
+                      sx={{
+                        fontSize: "2rem",
+                        color: theme.palette.common.white,
+                      }}
+                    />
+                  }
+                />
+              ) : (
+                <Skeleton
+                  variant="rounded"
+                  animation="wave"
+                  width={350}
+                  height={200}
+                />
+              )}
+            </Stack>
+          </Stack>
+
+          <Typography component="h4" variant="h3">
+            Финансов Отчет
+          </Typography>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            my={5}
+            gap={1}
+            sx={{
+              "@media (max-width: 1505px)": {
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: "1rem",
+              },
+              "@media (max-width: 1005px)": {
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              },
+            }}
+          >
+            {FINANCE_WIDGETS_DATA.map((widget) =>
+              totalIncomeAndExpenses ? (
+                <FinanceWidget
+                  key={widget.title}
+                  type={widget.type}
+                  title={widget.title}
+                  amount={widget.amount}
+                  date={widget.date}
+                />
+              ) : (
+                <Skeleton
+                  key={widget.title}
+                  variant="rounded"
+                  animation="wave"
+                  width={350}
+                  height={200}
+                />
+              )
+            )}
           </Stack>
         </Paper>
-        <TodoList
-          todos={todos}
-          onAddTodo={handleAddTodo}
-          onEditTodo={handleEditTodo}
-          onDeleteTodo={handleDeleteTodo}
-          onToggleComplete={handleToggleComplete}
-        />
       </Container>
     </>
   );
