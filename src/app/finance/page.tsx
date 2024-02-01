@@ -53,6 +53,40 @@ const Finance = () => {
   const [modalData, setModalData] = useState<Transaction | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [view, setView] = useState<"chart" | "table">("chart");
+  const FINANCE_WIDGETS_DATA = [
+    {
+      type: "income",
+      title: "Месечни Приходи",
+      amount: totalIncomeAndExpenses ? totalIncomeAndExpenses.totalIncome : 0,
+      date: new Date().toLocaleString("bg-BG", {
+        month: "long",
+      }),
+    },
+    {
+      type: "expenses",
+      title: "Месечни Разходи",
+      amount: totalIncomeAndExpenses ? totalIncomeAndExpenses.totalExpenses : 0,
+      date: new Date().toLocaleString("bg-BG", {
+        month: "long",
+      }),
+    },
+    {
+      type: "income",
+      title: "Годишни Приходи",
+      amount: totalIncomeAndExpenses
+        ? totalIncomeAndExpenses.totalYearIncome
+        : 0,
+      date: new Date().getFullYear().toString(),
+    },
+    {
+      type: "expenses",
+      title: "Годишни Разходи",
+      amount: totalIncomeAndExpenses
+        ? totalIncomeAndExpenses.totalYearExpenses
+        : 0,
+      date: new Date().getFullYear().toString(),
+    },
+  ];
 
   const columns: GridColDef[] = [
     {
@@ -294,94 +328,39 @@ const Finance = () => {
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
-                flexWrap="wrap"
+                my={5}
+                gap={1}
+                sx={{
+                  "@media (max-width: 1505px)": {
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: "1rem",
+                  },
+                  "@media (max-width: 1005px)": {
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  },
+                }}
               >
-                {totalIncomeAndExpenses?.totalIncome ? (
-                  <FinanceWidget
-                    type="income"
-                    title="Месечни Приходи"
-                    amount={totalIncomeAndExpenses.totalIncome}
-                    date={
-                      new Date()
-                        .toLocaleString("bg-BG", {
-                          month: "long",
-                        })
-                        .charAt(0)
-                        .toUpperCase() +
-                      new Date()
-                        .toLocaleString("bg-BG", {
-                          month: "long",
-                        })
-                        .slice(1)
-                    }
-                  />
-                ) : (
-                  <Skeleton
-                    variant="rounded"
-                    animation="wave"
-                    width={300}
-                    height={200}
-                  />
-                )}
-
-                {totalIncomeAndExpenses?.totalExpenses ? (
-                  <FinanceWidget
-                    type="expenses"
-                    title="Месечни Разходи"
-                    amount={totalIncomeAndExpenses.totalExpenses}
-                    date={
-                      new Date()
-                        .toLocaleString("bg-BG", {
-                          month: "long",
-                        })
-                        .charAt(0)
-                        .toUpperCase() +
-                      new Date()
-                        .toLocaleString("bg-BG", {
-                          month: "long",
-                        })
-                        .slice(1)
-                    }
-                  />
-                ) : (
-                  <Skeleton
-                    variant="rounded"
-                    animation="wave"
-                    width={300}
-                    height={200}
-                  />
-                )}
-
-                {totalIncomeAndExpenses?.totalYearIncome ? (
-                  <FinanceWidget
-                    type="income"
-                    title="Годишни Приходи"
-                    amount={totalIncomeAndExpenses.totalYearIncome}
-                    date={new Date().getFullYear().toString()}
-                  />
-                ) : (
-                  <Skeleton
-                    variant="rounded"
-                    animation="wave"
-                    width={300}
-                    height={200}
-                  />
-                )}
-
-                {totalIncomeAndExpenses?.totalYearExpenses ? (
-                  <FinanceWidget
-                    type="expenses"
-                    title="Годишни Разходи"
-                    amount={totalIncomeAndExpenses.totalYearExpenses}
-                    date={new Date().getFullYear().toString()}
-                  />
-                ) : (
-                  <Skeleton
-                    variant="rounded"
-                    animation="wave"
-                    width={300}
-                    height={200}
-                  />
+                {FINANCE_WIDGETS_DATA.map((widget) =>
+                  totalIncomeAndExpenses ? (
+                    <FinanceWidget
+                      key={widget.title}
+                      type={widget.type}
+                      title={widget.title}
+                      amount={widget.amount}
+                      date={widget.date}
+                    />
+                  ) : (
+                    <Skeleton
+                      key={widget.title}
+                      variant="rounded"
+                      animation="wave"
+                      width={350}
+                      height={200}
+                    />
+                  )
                 )}
               </Stack>
             </Paper>
