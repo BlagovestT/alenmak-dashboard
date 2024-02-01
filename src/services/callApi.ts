@@ -31,9 +31,14 @@ export const callApi = async <T>(params: CallApiParams): Promise<T> => {
     try {
       const response = await axios(url, config);
       return response.data;
-    } catch (error) {
-      console.log("API err ", error);
-      throw new Error(`API error - ${(error as Error).message}`);
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        signOut();
+        throw new Error("Access token has expired");
+      } else {
+        console.log("API err ", error);
+        throw new Error(`API error - ${(error as Error).message}`);
+      }
     }
   } else {
     signOut();

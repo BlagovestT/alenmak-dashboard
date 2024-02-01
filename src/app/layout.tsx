@@ -30,7 +30,7 @@ const RootLayout = ({
   return (
     <html lang="en">
       <ThemeRegistry>
-        <body suppressHydrationWarning={true}>
+        <body suppressHydrationWarning={true} style={{ overflowX: "hidden" }}>
           {pathname !== "/auth/login" && pathname !== "/auth/register" && (
             <Sidebar />
           )}

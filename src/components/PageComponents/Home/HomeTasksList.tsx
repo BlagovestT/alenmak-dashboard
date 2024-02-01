@@ -67,7 +67,8 @@ const HomeTasksList = () => {
     });
 
     if (newTask.success && tasksData) {
-      setTasksData([newTask.data, ...tasksData]);
+      setTasksData([...tasksData, newTask.data]);
+      setTaskTitle("");
     }
   };
 
@@ -111,6 +112,7 @@ const HomeTasksList = () => {
       >
         <InputLabel>Добавете задача...</InputLabel>
         <OutlinedInput
+          value={taskTitle}
           type="text"
           endAdornment={
             <InputAdornment position="end">
