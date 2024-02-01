@@ -35,7 +35,7 @@ import {
 } from "@/services/Transactions/apiTransactionsSnippets";
 import Table from "@/components/MUIComponents/Table";
 import { GridColDef } from "@mui/x-data-grid";
-import { formatDate } from "@/helpers/helpers";
+import { USER_ROLE, formatDate } from "@/helpers/helpers";
 import Dialog from "@/components/MUIComponents/Dialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -191,6 +191,10 @@ const Finance = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
+
+      if (USER_ROLE !== "admin") {
+        window.location.replace("/");
+      }
 
       const transactionsData = await callApi<GetQueryAllTransactionsSnippet>({
         query: getQueryAllTransactions,

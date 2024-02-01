@@ -32,6 +32,7 @@ import FinanceWidget from "@/components/PageComponents/Finance/FinanceWidget";
 import HomeTasksList from "@/components/PageComponents/Home/HomeTasksList";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import Groups2OutlinedIcon from "@mui/icons-material/Groups2Outlined";
+import { USER_ROLE } from "@/helpers/helpers";
 
 const Home = () => {
   const theme = useTheme();
@@ -39,6 +40,7 @@ const Home = () => {
   const [patientsData, setPatientsData] = useState<Patient[]>();
   const [totalIncomeAndExpenses, setTotalIncomeAndExpenses] =
     useState<TotalMonthYear>();
+  const [userRole, setUserRole] = useState<string>();
   const FINANCE_WIDGETS_DATA = [
     {
       type: "income",
@@ -110,6 +112,10 @@ const Home = () => {
 
         if (totalIncomeAndExpenses.success) {
           setTotalIncomeAndExpenses(totalIncomeAndExpenses.data);
+        }
+
+        if (USER_ROLE) {
+          setUserRole(USER_ROLE);
         }
       } catch (err) {
         console.log(err);
@@ -186,48 +192,53 @@ const Home = () => {
             </Stack>
           </Stack>
 
-          <Typography component="h4" variant="h3">
-            Финансов Отчет
-          </Typography>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            my={5}
-            gap={1}
-            sx={{
-              "@media (max-width: 1505px)": {
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "1rem",
-              },
-              "@media (max-width: 1005px)": {
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              },
-            }}
-          >
-            {FINANCE_WIDGETS_DATA.map((widget) =>
-              totalIncomeAndExpenses ? (
-                <FinanceWidget
-                  key={widget.title}
-                  type={widget.type}
-                  title={widget.title}
-                  amount={widget.amount}
-                  date={widget.date}
-                />
-              ) : (
-                <Skeleton
-                  key={widget.title}
-                  variant="rounded"
-                  animation="wave"
-                  width={350}
-                  height={200}
-                />
-              )
-            )}
-          </Stack>
+          {userRole && userRole === "admin" && (
+            <>
+              <Typography component="h4" variant="h3">
+                Финансов Отчет
+              </Typography>
+
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                my={5}
+                gap={1}
+                sx={{
+                  "@media (max-width: 1505px)": {
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: "1rem",
+                  },
+                  "@media (max-width: 1005px)": {
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  },
+                }}
+              >
+                {FINANCE_WIDGETS_DATA.map((widget) =>
+                  totalIncomeAndExpenses ? (
+                    <FinanceWidget
+                      key={widget.title}
+                      type={widget.type}
+                      title={widget.title}
+                      amount={widget.amount}
+                      date={widget.date}
+                    />
+                  ) : (
+                    <Skeleton
+                      key={widget.title}
+                      variant="rounded"
+                      animation="wave"
+                      width={350}
+                      height={200}
+                    />
+                  )
+                )}
+              </Stack>
+            </>
+          )}
         </Paper>
       </Container>
     </>

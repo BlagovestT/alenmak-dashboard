@@ -6,7 +6,7 @@ import { SvgIconTypeMap } from "@mui/material";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 
-type SidebarMenuProps = {
+export type SidebarMenuProps = {
   title: string;
   icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   to: string;
