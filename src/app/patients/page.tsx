@@ -1,6 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Container, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Container,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Table from "@/components/MUIComponents/Table";
 import { formatDate } from "@/helpers/helpers";
 import { signOut } from "@/services/Auth/auth";
@@ -32,6 +38,7 @@ import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import DocumentsContent from "@/components/PageComponents/Patients/DocumentsContent";
 
+export type View = "activePatients" | "archivedPatients";
 export type ModalType = "create" | "edit" | "documents";
 export type ModalDataType = {
   _id: string;
@@ -46,6 +53,10 @@ export type ModalDataType = {
 
 const PatientsPage = () => {
   const [patientsData, setPatientsData] = useState<Patient[]>([]);
+  const [archivedPatientsData, setArchivedPatientsData] = useState<Patient[]>(
+    []
+  );
+  const [view, setView] = useState<View>("activePatients");
   const [modalData, setModalData] = useState<ModalDataType>();
   const [modalType, setModalType] = useState<ModalType>("create");
   const [openModal, setModalOpen] = useState<boolean>(false);
@@ -239,7 +250,16 @@ const PatientsPage = () => {
         });
 
         if (patientsData.success) {
-          setPatientsData(patientsData.data);
+          const activePatients = patientsData.data.filter(
+            (patient) => patient.status === "active"
+          );
+
+          const archivedPatients = patientsData.data.filter(
+            (patient) => patient.status !== "active"
+          );
+
+          setPatientsData(activePatients);
+          setArchivedPatientsData(archivedPatients);
           setLoading(false);
         } else {
           signOut();
@@ -326,7 +346,48 @@ const PatientsPage = () => {
       />
 
       <Container>
-        <Table rows={patientsData} columns={columns} loading={loading} />
+        <Stack
+          width="100%"
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center"
+          gap={1}
+          mb={2}
+        >
+          {view === "activePatients" ? (
+            <Button
+              onClick={() => {
+                setLoading(true);
+                setTimeout(() => {
+                  setView("archivedPatients");
+                  setLoading(false);
+                }, 300);
+              }}
+              message="Архив"
+            />
+          ) : (
+            <Button
+              onClick={() => {
+                setLoading(true);
+                setTimeout(() => {
+                  setView("activePatients");
+                  setLoading(false);
+                }, 300);
+              }}
+              message="Пациенти"
+            />
+          )}
+        </Stack>
+
+        {view === "activePatients" ? (
+          <Table rows={patientsData} columns={columns} loading={loading} />
+        ) : (
+          <Table
+            rows={archivedPatientsData}
+            columns={columns}
+            loading={loading}
+          />
+        )}
 
         <Modal
           modalTitle={
