@@ -13,6 +13,7 @@ export type Staff = {
     | "Болногледач";
   salary: number;
   status: "paid" | "unpaid";
+  color: string;
   createdAt: Date;
   updatedAt: Date;
   __v: number;

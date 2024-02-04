@@ -48,14 +48,20 @@ const Scheduler: React.FC<SchedulerProps> = ({
     originalEvent: ProcessedEvent
   ): Promise<void | ProcessedEvent> => {
     try {
+      const staffMember = resources.find(
+        (staff) => staff.staff_id === updatedEvent.staff_id
+      );
+      if (!staffMember) return;
       const newEvent = await callApi<PostQueryUpdateEventSnippet>({
         query: postQueryUpdateEvent(
           {
             title: originalEvent.title,
             start: updatedEvent.start,
             end: updatedEvent.end,
-            staff_id: updatedEvent.staff_id,
-            color: originalEvent.color || "",
+            staff_id: updatedEvent.staff_id
+              ? updatedEvent.staff_id
+              : originalEvent.staff_id,
+            color: staffMember.color ?? "",
           },
           originalEvent.event_id.toString()
         ),
@@ -74,7 +80,10 @@ const Scheduler: React.FC<SchedulerProps> = ({
                   ...originalEvent,
                   start: updatedEvent.start,
                   end: updatedEvent.end,
-                  staff_id: updatedEvent.staff_id,
+                  staff_id: updatedEvent.staff_id
+                    ? updatedEvent.staff_id
+                    : originalEvent.staff_id,
+                  color: staffMember.color ?? "",
                 },
               ];
             }

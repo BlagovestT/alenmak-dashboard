@@ -1,5 +1,4 @@
 "use client";
-// https://www.npmjs.com/package/@aldabil/react-scheduler
 import { useEffect, useState } from "react";
 import { Box, CircularProgress, Stack } from "@mui/material";
 import PageHeader from "@/components/SmallComponents/PageHeader/PageHeader";
@@ -53,7 +52,7 @@ const SchedulePage = () => {
           avatar: `${staff.first_name.charAt(0).toUpperCase()}${staff.last_name
             .charAt(0)
             .toUpperCase()}`,
-          color: "#ab2d2d",
+          color: staff.color,
           role: staff.occupation,
         }));
 

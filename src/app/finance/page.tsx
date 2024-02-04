@@ -40,6 +40,8 @@ import Dialog from "@/components/MUIComponents/Dialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { postQueryDeleteTransaction } from "@/services/Transactions/apiTransactionsPostQueries";
+import { GetQueryStaffMembersSnippet } from "@/services/Staff/apiStaffSnippets";
+import { getQueryStaffMembers } from "@/services/Staff/apiStaffGetQueries";
 
 export type ModalType = "create" | "edit";
 
@@ -47,6 +49,7 @@ const Finance = () => {
   const [transactionsData, setTransactionsData] = useState<Transaction[]>([]);
   const [totalIncomeAndExpenses, setTotalIncomeAndExpenses] =
     useState<TotalMonthYear>();
+  const [totalStaffSalary, setTotalStaffSalary] = useState<number>(0);
   const [chartData, setChartData] = useState<TotalChartMonthYear[]>();
   const [openModal, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>("create");
@@ -220,6 +223,10 @@ const Finance = () => {
           query: getQueryTotalIncomeAndExpensesForYear(currentYear.toString()),
         });
 
+      const staffData = await callApi<GetQueryStaffMembersSnippet>({
+        query: getQueryStaffMembers,
+      });
+
       if (transactionsData.success) {
         const sortedTransactionsData = transactionsData.data.sort((a, b) => {
           const dateA = new Date(a.createdAt);
@@ -237,6 +244,15 @@ const Finance = () => {
 
       if (totalIncomeAndExpensesForYearData) {
         setChartData(totalIncomeAndExpensesForYearData);
+      }
+
+      if (staffData.success) {
+        const totalStaffSalary = staffData.data.reduce(
+          (acc, staff) => acc + staff.salary,
+          0
+        );
+
+        setTotalStaffSalary(totalStaffSalary);
       }
     })();
   }, []);
@@ -353,7 +369,11 @@ const Finance = () => {
                       key={widget.title}
                       type={widget.type}
                       title={widget.title}
-                      amount={widget.amount}
+                      amount={
+                        widget.type === "expenses"
+                          ? widget.amount + totalStaffSalary
+                          : widget.amount
+                      }
                       date={widget.date}
                     />
                   ) : (
@@ -371,7 +391,7 @@ const Finance = () => {
 
             <Paper sx={{ padding: "20px", marginBottom: "20px" }}>
               <Typography variant="h3" component="h4" mb={2}>
-                Годишен Финансов Отчет
+                Годишен Финансов Отчет (без заплати)
               </Typography>
 
               {chartData ? (

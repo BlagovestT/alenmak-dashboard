@@ -101,6 +101,10 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
       setFormStatus(null);
       setAlertMessage(null);
 
+      const staffMember = resources.find(
+        (resource) => resource.staff_id === values.staff_id
+      );
+      if (!staffMember) return;
       const event_id = event?.event_id.toString() || Math.random().toString();
 
       const added_updated_event = (await new Promise((res) => {
@@ -110,7 +114,7 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
           start: values.start,
           end: values.end,
           staff_id: values.staff_id,
-          color: "red",
+          color: staffMember.color,
         });
       })) as ProcessedEvent;
 
@@ -120,7 +124,7 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
         start: values.start,
         end: values.end,
         staff_id: values.staff_id,
-        color: "red",
+        color: staffMember.color ?? "",
       };
 
       if (event) {
