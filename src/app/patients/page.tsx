@@ -46,7 +46,7 @@ export type ModalDataType = {
   last_name: string;
   age: number;
   gender: "male" | "female";
-  group: "група а" | "група б";
+  group: "група 1" | "група 2" | "група 3" | "група 4";
   paid: "paid" | "unpaid";
   status: "active" | "inactive" | "released" | "deceased";
 };
@@ -98,6 +98,13 @@ const PatientsPage = () => {
       field: "group",
       headerName: "Група",
       width: 100,
+      renderCell: (params) => {
+        return (
+          <Typography component="p" variant="body2">
+            {params.value.charAt(0).toUpperCase() + params.value.slice(1)}
+          </Typography>
+        );
+      },
     },
     {
       field: "status",

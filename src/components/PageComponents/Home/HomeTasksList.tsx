@@ -129,7 +129,9 @@ const HomeTasksList = () => {
       <List>
         {tasksData ? (
           tasksData.length === 0 ? (
-            <Typography m={2}>Няма добавени задачи...</Typography>
+            <Typography m={2} textAlign="center">
+              Няма добавени задачи
+            </Typography>
           ) : (
             tasksData.map((task) => (
               <ListItem

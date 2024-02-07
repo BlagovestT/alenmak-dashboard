@@ -6,10 +6,10 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  useTheme,
 } from "@mui/material";
 import Alert, { AlertStatuses } from "@/components/MUIComponents/Alert";
 import Button from "@/components/MUIComponents/Button";
-import TextField from "@/components/MUIComponents/TextField";
 import {
   DefaultRecourse,
   ProcessedEvent,
@@ -40,7 +40,6 @@ type shiftsDataType = {
 };
 
 const fieldValidation = object({
-  title: string().required("Полето е задължително"),
   start: date().required("Полето е задължително"),
   end: date().required("Полето е задължително"),
   staff_id: string().required("Полето е задължително"),
@@ -53,7 +52,6 @@ const SHIFTS_DATA: shiftsDataType[] = [
 ];
 
 type SchedulerFormValues = {
-  title: string;
   start: Date;
   end: Date;
   staff_id: string;
@@ -65,6 +63,7 @@ interface SchedulerEditorProps {
 }
 
 const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
+  const theme = useTheme();
   const event = scheduler.edited;
   const eventState = scheduler.state;
   const [formStatus, setFormStatus] = useState<AlertStatuses>(null);
@@ -72,7 +71,6 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [shift, setShift] = useState<Shift | null>(null);
   const initialValues: SchedulerFormValues = {
-    title: event?.title || "",
     start: event?.start || eventState.start.value || new Date(),
     end: event?.end || eventState.end.value || new Date(),
     staff_id: (scheduler.staff_id as string) || "",
@@ -104,27 +102,28 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
       const staffMember = resources.find(
         (resource) => resource.staff_id === values.staff_id
       );
+
       if (!staffMember) return;
       const event_id = event?.event_id.toString() || Math.random().toString();
 
       const added_updated_event = (await new Promise((res) => {
         res({
           event_id: event_id,
-          title: values.title,
+          title: staffMember.title,
           start: values.start,
           end: values.end,
           staff_id: values.staff_id,
-          color: staffMember.color,
+          color: theme.palette.primary.main,
         });
       })) as ProcessedEvent;
 
       const body: PostQueryCreateEventInput = {
         event_id: event_id,
-        title: values.title,
+        title: staffMember.title,
         start: values.start,
         end: values.end,
         staff_id: values.staff_id,
-        color: staffMember.color ?? "",
+        color: theme.palette.primary.main,
       };
 
       if (event) {
@@ -180,14 +179,19 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
           {({ handleSubmit, handleChange, touched, errors, values }) => (
             <Form onSubmit={handleSubmit}>
               <Stack spacing={3} mt={3}>
-                <TextField
-                  name="title"
-                  label="Заглавие"
-                  error={touched["title"] && !!errors["title"]}
-                  helperText={touched["title"] && errors["title"]}
+                <Select
+                  name="staff_id"
+                  label="Служител"
+                  selectValues={resources.map((resource) => {
+                    return {
+                      label: resource.title,
+                      value: resource.staff_id,
+                    };
+                  })}
+                  value={values.staff_id}
+                  helperText={touched["staff_id"] && errors["staff_id"]}
+                  error={touched["staff_id"] && !!errors["staff_id"]}
                   onChange={handleChange}
-                  value={values.title}
-                  type="text"
                 />
 
                 <ToggleButtonGroup
@@ -227,21 +231,6 @@ const SchedulerEditor = ({ scheduler, resources }: SchedulerEditorProps) => {
                   error={touched["end"] && !!errors["end"]}
                   helperText={touched["end"] && errors["end"]}
                   value={values.end}
-                />
-
-                <Select
-                  name="staff_id"
-                  label="Служител"
-                  selectValues={resources.map((resource) => {
-                    return {
-                      label: resource.title,
-                      value: resource.staff_id,
-                    };
-                  })}
-                  value={values.staff_id}
-                  helperText={touched["staff_id"] && errors["staff_id"]}
-                  error={touched["staff_id"] && !!errors["staff_id"]}
-                  onChange={handleChange}
                 />
 
                 <Button

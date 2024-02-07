@@ -61,7 +61,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
             staff_id: updatedEvent.staff_id
               ? updatedEvent.staff_id
               : originalEvent.staff_id,
-            color: staffMember.color ?? "",
+            color: originalEvent.color ?? "",
           },
           originalEvent.event_id.toString()
         ),
@@ -83,7 +83,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
                   staff_id: updatedEvent.staff_id
                     ? updatedEvent.staff_id
                     : originalEvent.staff_id,
-                  color: staffMember.color ?? "",
+                  color: originalEvent.color ?? "",
                 },
               ];
             }

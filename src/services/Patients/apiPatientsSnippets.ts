@@ -3,7 +3,7 @@ export type Patient = {
   first_name: string;
   last_name: string;
   gender: "male" | "female";
-  group: "група а" | "група б";
+  group: "група 1" | "група 2" | "група 3" | "група 4";
   age: number;
   paid: "paid" | "unpaid";
   status: "active" | "inactive" | "released" | "deceased";

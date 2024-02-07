@@ -15,6 +15,7 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset" | undefined;
   sx?: SxProps<Theme>;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -25,6 +26,7 @@ const Button: React.FC<ButtonProps> = ({
   type,
   sx,
   onClick,
+  disabled,
 }) => {
   return (
     <MUIButton
@@ -33,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       type={type as "button" | "reset" | "submit" | undefined}
       sx={sx}
+      disabled={disabled}
     >
       {icon && <>{icon} </>}
       {message}

@@ -24,8 +24,10 @@ const GENDER_SELECT_VALUES = [
 ];
 
 const GROUP_SELECT_VALUES = [
-  { label: "Група А", value: "група а" },
-  { label: "Група Б", value: "група б" },
+  { label: "Група 1", value: "група 1" },
+  { label: "Група 2", value: "група 2" },
+  { label: "Група 3", value: "група 3" },
+  { label: "Група 4", value: "група 4" },
 ];
 
 const STATUS_SELECT_VALUES = [
@@ -112,7 +114,11 @@ const PatientForm: React.FC<PatientFormProps> = ({
             last_name: values.lastName,
             age: +values.age,
             gender: values.gender as "male" | "female",
-            group: values.group as "група а" | "група б",
+            group: values.group as
+              | "група 1"
+              | "група 2"
+              | "група 3"
+              | "група 4",
           }),
         });
 
@@ -139,7 +145,11 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 | "released"
                 | "deceased",
               gender: values.gender as "male" | "female",
-              group: values.group as "група а" | "група б",
+              group: values.group as
+                | "група 1"
+                | "група 2"
+                | "група 3"
+                | "група 4",
             }),
           });
 

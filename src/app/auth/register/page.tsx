@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgress, Paper, Stack, Typography } from "@mui/material";
 import Alert, { AlertStatuses } from "@/components/MUIComponents/Alert";
 import Button from "@/components/MUIComponents/Button";
 import TextField from "@/components/MUIComponents/TextField";
-import { signUp } from "@/services/Auth/auth";
 import { Form, Formik } from "formik";
 import Link from "next/link";
 import { object, string, ref } from "yup";
@@ -32,7 +31,7 @@ type RegisterFormValues = {
 const RegisterPage = () => {
   const [formStatus, setFormStatus] = useState<AlertStatuses>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading] = useState<boolean>(false);
   const initialValues: RegisterFormValues = {
     userName: "",
     email: "",
@@ -40,29 +39,36 @@ const RegisterPage = () => {
     confirmPassword: "",
   };
 
-  const handleFormSubmit = async (values: RegisterFormValues) => {
-    try {
-      setLoading(true);
-      setFormStatus(null);
-      setAlertMessage(null);
+  // const handleFormSubmit = async (values: RegisterFormValues) => {
+  //   try {
+  //     setLoading(true);
+  //     setFormStatus(null);
+  //     setAlertMessage(null);
 
-      const newUser = await signUp(
-        values.userName,
-        values.email,
-        values.password
-      );
-      if (newUser) {
-        window.location.assign("/auth/login");
-      } else {
-        throw new Error(newUser.message);
-      }
-    } catch (err) {
-      console.log((err as Error).message);
-      setFormStatus("error");
-      setAlertMessage("Потребителското име или имейл адреса са заети!");
-      setLoading(false);
-    }
-  };
+  //     const newUser = await signUp(
+  //       values.userName,
+  //       values.email,
+  //       values.password
+  //     );
+  //     if (newUser) {
+  //       window.location.assign("/auth/login");
+  //     } else {
+  //       throw new Error(newUser.message);
+  //     }
+  //   } catch (err) {
+  //     console.log((err as Error).message);
+  //     setFormStatus("error");
+  //     setAlertMessage("Потребителското име или имейл адреса са заети!");
+  //     setLoading(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    setFormStatus("warning");
+    setAlertMessage(
+      "За да създадете акаунт, моля, свържете се с администратор на сайта!"
+    );
+  }, []);
 
   return (
     <Stack
@@ -87,7 +93,7 @@ const RegisterPage = () => {
         {!loading ? (
           <Formik
             initialValues={initialValues}
-            onSubmit={handleFormSubmit}
+            onSubmit={() => {}}
             validationSchema={fieldValidation}
           >
             {({ handleSubmit, handleChange, touched, errors, values }) => (
@@ -101,6 +107,7 @@ const RegisterPage = () => {
                     onChange={handleChange}
                     value={values.userName}
                     type="userName"
+                    disabled
                   />
 
                   <TextField
@@ -111,6 +118,7 @@ const RegisterPage = () => {
                     onChange={handleChange}
                     value={values.email}
                     type="email"
+                    disabled
                   />
 
                   <TextField
@@ -121,6 +129,7 @@ const RegisterPage = () => {
                     onChange={handleChange}
                     value={values.password}
                     type="password"
+                    disabled
                   />
 
                   <TextField
@@ -135,9 +144,10 @@ const RegisterPage = () => {
                     onChange={handleChange}
                     value={values.confirmPassword}
                     type="password"
+                    disabled
                   />
 
-                  <Button message="Регистрация" type="submit" />
+                  <Button message="Регистрация" type="submit" disabled />
 
                   <Alert
                     message={alertMessage}

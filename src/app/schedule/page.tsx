@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, CircularProgress, Stack } from "@mui/material";
 import PageHeader from "@/components/SmallComponents/PageHeader/PageHeader";
 import Scheduler from "@/components/SmallComponents/Scheduler/Scheduler";
@@ -13,13 +13,18 @@ import {
 import Button from "@/components/MUIComponents/Button";
 import { GetQueryAllEventsSnippet } from "@/services/Events/apiEventsSnippets";
 import { getQueryAllEvents } from "@/services/Events/apiEventsGetQueries";
+import { useReactToPrint } from "react-to-print";
 
 type SchedulerViewMode = "scheduler" | "staffScheduler";
 
 const SchedulePage = () => {
+  const componentRef = useRef();
   const [eventsData, setEventsData] = useState<ProcessedEvent[]>();
   const [resourcesData, setResourcesData] = useState<DefaultRecourse[]>();
   const [view, setView] = useState<SchedulerViewMode>("scheduler");
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current ?? null,
+  });
 
   useEffect(() => {
     (async () => {
@@ -67,20 +72,27 @@ const SchedulePage = () => {
         header="График"
         subheader="График на вашите служители"
         action={
-          <Button
-            message={
-              view === "scheduler" ? "График на Служители" : "Общ График"
-            }
-            onClick={() =>
-              setView((prevView) =>
-                prevView === "scheduler" ? "staffScheduler" : "scheduler"
-              )
-            }
-          />
+          <Stack gap={1}>
+            <Button
+              message={
+                view === "scheduler" ? "График на Служители" : "Общ График"
+              }
+              onClick={() =>
+                setView((prevView) =>
+                  prevView === "scheduler" ? "staffScheduler" : "scheduler"
+                )
+              }
+            />
+            <Button
+              message="Принтирай график"
+              color="info"
+              onClick={handlePrint}
+            />
+          </Stack>
         }
       />
 
-      <Box width="100%" px={4} py={2}>
+      <Box width="100%" px={4} py={2} ref={componentRef}>
         {view === "scheduler" && (
           <>
             {resourcesData ? (
