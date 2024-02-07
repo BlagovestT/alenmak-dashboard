@@ -34,6 +34,7 @@ const FinanceWidget: React.FC<FinanceWidgetProps> = ({
             : theme.palette.secondary.light,
         padding: "15px",
         borderRadius: "5px",
+        border: `solid 2px ${theme.palette.divider}`
       }}
     >
       <Stack
